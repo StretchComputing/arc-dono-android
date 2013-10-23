@@ -1,0 +1,42 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_settings"
+        android:orderInCategory="0"
+        android:showAsAction="always"
+        android:title="split">
+        <menu>
+            <item
+                android:id="@+id/splitByDollar"
+                android:title="Split By Dollar"/>
+            
+            <item
+                android:id="@+id/splitByPercent"
+                android:title="Split By # People"/>
+            
+        </menu>
+       
+    </item>
+    
+     <item
+        android:id="@+id/showBalance"
+        android:orderInCategory="0"
+        android:showAsAction="always"
+        android:title="balance">
+        
+       
+    </item>
+    
+     <item
+        android:id="@+id/invoiceRefresh"
+        android:orderInCategory="0"
+        android:showAsAction="always"
+        android:icon="@drawable/refresh"
+        android:title="refresh">
+        
+       
+    </item>
+   
+    
+
+</menu>

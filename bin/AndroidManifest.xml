@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.donomobileapp"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="9"
+        android:targetSdkVersion="17" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <!-- Camera Card.io features - recommended -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
+
+    <application
+        android:name="com.donomobile.ArcMobileApp"
+        android:allowBackup="false"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Sherlock.Light" >
+        <activity
+            android:name="com.donomobile.activities.Splash"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.Login"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.Home"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.Funds"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.Social"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.GetCheck"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysVisible" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.ViewCheck"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.donomobile.fragments.FragmentChangeActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.donomobile.fragments.ResponsiveUIActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.donomobile.fragments.anim.CustomScaleAnimation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.donomobile.fragments.anim.CustomZoomAnimation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.donomobile.fragments.anim.CustomSlideAnimation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="io.card.payment.CardIOActivity"
+            android:configChanges="keyboardHidden|orientation" />
+        <activity
+            android:name="io.card.payment.DataEntryActivity"
+            android:screenOrientation="portrait" />
+
+        <provider
+            android:name="com.donomobile.db.ArcProvider"
+            android:authorities="com.donomobile.db.provider" />
+
+        <activity
+            android:name="com.donomobile.activities.AdditionalTip"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/title_activity_additional_tip"
+            android:windowSoftInputMode="stateAlwaysVisible" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.ConfirmPayment"
+            android:label="@string/title_activity_confirm_payment"
+            android:windowSoftInputMode="stateUnspecified" >
+        </activity>
+        <activity
+            android:name="com.donomobile.MainActivity"
+            android:label="@string/title_activity_main"
+            android:parentActivityName="com.donomobile.BaseActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.arcmobileapp.BaseActivity" />
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.Review"
+            android:label="@string/title_activity_review"
+            android:parentActivityName="com.donomobile.BaseActivity"
+            android:windowSoftInputMode="stateVisible" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.arcmobileapp.BaseActivity" />
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.InitActivity"
+            android:label="@string/title_activity_init" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.Support"
+            android:label="@string/title_activity_support" >
+        </activity>
+        <activity
+            android:name="com.donomobile.Profile"
+            android:label="@string/title_activity_profile"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.UserProfile"
+            android:label="@string/title_activity_user_profile" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.UserLogin"
+            android:label="@string/title_activity_user_login"
+            android:windowSoftInputMode="stateVisible" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.UserCreateNew"
+            android:label="@string/title_activity_user_create_new"
+            android:windowSoftInputMode="stateVisible" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.GuestCreateCustomer"
+            android:label="@string/title_activity_guest_create_customer" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.TermsActivity"
+            android:label="@string/title_activity_terms" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.EditServer"
+            android:label="@string/title_activity_edit_server" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.PaymentHistory"
+            android:label="@string/title_activity_payment_history" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.PaymentDetail"
+            android:label="@string/title_activity_payment_detail" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.ChurchDonationTypeSingle"
+            android:label="@string/title_activity_church_donation_type_single" 
+            android:windowSoftInputMode="stateHidden" >
+            
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.ChurchDonationTypeMultiple"
+            android:label="@string/title_activity_church_donation_type_multiple" 
+            android:windowSoftInputMode="stateHidden" >
+            
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.ChurchDonationSelector"
+            android:label="@string/title_activity_church_donation_selector" >
+        </activity>
+    </application>
+
+</manifest>

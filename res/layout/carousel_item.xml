@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/carousel_item"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+ 
+    
+   <ImageView android:id="@+id/itemImage" android:layout_width="150dp"
+            android:layout_height="150dp" android:scaleType="fitXY"
+            android:adjustViewBounds="true" android:gravity="center"   />
+
+	<TextView
+	    android:id="@+id/itemText"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignLeft="@+id/itemImage"
+	    android:layout_alignRight="@+id/itemImage"
+	    android:layout_alignBottom="@+id/itemImage"
+	    android:padding="5dp"
+	    android:textSize="25sp"
+	    android:lines="1"	
+	    android:gravity="bottom|left"
+	    android:textColor="#FFFFFFFF"
+	    android:background="#CC666666" />
+	
+	    <!-- 
+	    android:layout_alignTop="@+id/itemImage"
+	    android:layout_margin="1dp"
+	     -->
+
+</RelativeLayout>

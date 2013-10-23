@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:id="@+id/back_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:layout_marginTop="5dp"
+         />
+        
+       <RelativeLayout
+           android:id="@+id/back_image_view_two"
+           android:layout_width="fill_parent"
+           android:layout_height="19dp"
+           android:layout_below="@+id/back_image_view"
+           android:layout_marginLeft="7dp"
+           android:layout_marginRight="7dp"
+            />
+       
+    <TextView
+        android:id="@+id/p_total_payment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/donation_description"
+        android:layout_alignBottom="@+id/donation_description"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="right"
+        android:text="45653.00"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/donation_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="7dp"
+        android:layout_marginTop="10dp"
+        android:maxWidth="30dp"
+        android:text="555"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/donation_description"
+        android:layout_alignBottom="@+id/donation_description"
+        android:layout_marginLeft="15dp"
+        android:layout_toRightOf="@+id/donation_description"
+        android:maxHeight="20dp"
+        android:maxWidth="180dp"
+        android:minHeight="0dp"
+        android:text="Steak burger with extra cheese"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/p_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_name"
+        android:layout_centerHorizontal="true"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="13sp" />
+
+</RelativeLayout>
