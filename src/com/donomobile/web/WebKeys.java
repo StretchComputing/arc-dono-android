@@ -6,6 +6,10 @@ public final class WebKeys {
 	public static final String LOGIN = "Login";
 	public static final String EMAIL = "eMail";
 
+	public static final String CHARGE_CONVENIENCE_FEE = "ChargeConvenienceFee";
+	public static final String CONVENIENCE_FEE = "ConvenienceFee";
+	public static final String CONVENIENCE_FEE_CAP = "ConvenienceFeeCap";
+
 	public static final String PASSWORD = "Password";
 	public static final String IS_GUEST = "IsGuest";
 	public static final String ACCEPT_TERMS = "AcceptTerms";
@@ -14,7 +18,7 @@ public final class WebKeys {
 	public static final String LAST_NAME = "LastName";
 
 	public static final String INVOICE_DETAILS = "InvoiceDetails";
-
+	public static final String QUICKPAY = "QuickPay";
 	
 	
 	public static final String MERCHANT_ID = "MerchantId";

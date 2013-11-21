@@ -3,29 +3,54 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ChurchDonationTypeMultiple" >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="43dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/donoorange" >
+
+        <TextView
+            android:id="@+id/titleTextOne"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:text="Medium Text"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
 
     <Button
         android:id="@+id/button1"
-        style="@style/CustomButton"
+        style="@style/DonoGreenStyle"
         android:layout_width="200dp"
         android:layout_height="45dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/i_button_green"
+        android:background="@drawable/dono_button_green"
         android:onClick="onContinueButtonClicked"
-        android:text="@string/pay_string" />
+        android:text="@string/donate_string" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/muchDonateTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="3dp"
         android:text="@string/how_much_donate_each"
-        android:textColor="@color/darkGray" />
+        android:textColor="@color/white"
+        android:textSize="13sp" />
 
     <ImageButton
         android:id="@+id/imageButton1"
@@ -58,9 +83,9 @@
         android:id="@+id/my_scroller"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:layout_below="@+id/textView1"
+        android:layout_below="@+id/muchDonateTop"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="40dp" >
 
         <LinearLayout
             android:id="@+id/scroll_layout"

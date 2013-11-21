@@ -24,7 +24,7 @@
     <string name="anim_fold">Fold</string>
     <string name="anim_slide">Slide Up</string>
     <string name="responsive_ui">Responsive UI</string>
-    <string name="home_dining">Where would you like to donate?</string>
+    <string name="home_dining">Select your donation location</string>
     <string name="invoicePayString">Pay Bill</string>
     <string name="invoiceDollarSplit">$</string>
     <string name="invoicePercentSplit">÷</string>
@@ -44,7 +44,7 @@
     <string name="twentytwo_percent_text">22%</string>
     <string name="title_activity_confirm_payment">ConfirmPayment</string>
     <string name="confirm_pin_string">Please enter your PIN</string>
-    <string name="confirm_make_payment">Confirm Payment</string>
+    <string name="confirm_make_payment">Confirm Donation</string>
     <string name="confirm_total">Total:</string>
     <string name="confirm_payment">Payment:</string>
     <string name="title_activity_main">MainActivity</string>
@@ -128,7 +128,7 @@
     <string name="select_apply_string">(select all that apply)</string>
     <string name="how_much_donate">How much would you like to donate?</string>
     <string name="dollar_sign">$</string>
-    <string name="pay_string">Pay</string>
+    <string name="pay_string">Donate Now!</string>
     <string name="fifty_string">$50</string>
     <string name="seventyfive_string">$75</string>
     <string name="hundred_string">$100</string>
@@ -137,5 +137,10 @@
     <string name="how_much_donate_each">How much would you like to donate to each:</string>
     <string name="twentyfive_string">$25</string>
     <string name="fifteen_string">$15</string>
+    <string name="donate_string">Donate</string>
+    <string name="confirm_string">Please confirm your donation details</string>
+    <string name="card_pin_string">Card PIN: (?)</string>
+    <string name="anonymous_string">Make this donation anonymously</string>
+    <string name="default_location_string">Make this my default location</string>
 
 </resources>

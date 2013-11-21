@@ -12,5 +12,11 @@
     <color name="darkGray">#C8C8C8</color>
     <color name="darkerGray">#A0A0A0</color>
     
+    
+    <color name="donoblue">#0A6C92</color>
+    <color name="donoorange">#F57516</color>
+    <color name="donogreen">#05A842</color>
+        
+    
 
 </resources>

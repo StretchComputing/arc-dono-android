@@ -57,10 +57,10 @@ public class Support extends BaseActivity {
 			phoneButton = (Button) findViewById(R.id.button_call);
 			phoneButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
-			donationOptionsCheckBox = (CheckBox) findViewById(R.id.checkBox1);
+			donationOptionsCheckBox = (CheckBox) findViewById(R.id.defaultCheck);
 			donationOptionsCheckBox.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 
-			defaultChurchCheckBox = (CheckBox) findViewById(R.id.checkBox2);
+			defaultChurchCheckBox = (CheckBox) findViewById(R.id.anonymousCheck);
 			defaultChurchCheckBox.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
 			

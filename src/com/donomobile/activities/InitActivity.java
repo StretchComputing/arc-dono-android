@@ -68,7 +68,7 @@ public class InitActivity extends Activity {
 			startButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			termsButton = (Button)findViewById(R.id.button_email);
 			termsButton.setTypeface(ArcMobileApp.getLatoLightTypeface());
-			privacyButton = (Button)findViewById(R.id.Button01);
+			privacyButton = (Button)findViewById(R.id.quickFour);
 			privacyButton.setTypeface(ArcMobileApp.getLatoLightTypeface());
 
 			//Get the token

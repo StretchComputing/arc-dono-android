@@ -57,9 +57,9 @@ public class UserProfile extends BaseActivity {
 
 			editServerButton = (Button) findViewById(R.id.edit_server_button);
 			signOutButton = (Button) findViewById(R.id.resendButton);
-			loginButton = (Button) findViewById(R.id.button2);
+			loginButton = (Button) findViewById(R.id.quickOne);
 			createButton = (Button) findViewById(R.id.button3);
-			paymentHistoryButton = (Button)findViewById(R.id.Button01);
+			paymentHistoryButton = (Button)findViewById(R.id.quickFour);
 			
 			editServerButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			signOutButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());

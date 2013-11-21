@@ -1,5 +1,7 @@
 package com.donomobile.activities;
 
+import java.util.ArrayList;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -10,9 +12,14 @@ import android.text.InputFilter;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
@@ -26,7 +33,6 @@ import com.donomobile.utils.ArcPreferences;
 import com.donomobile.utils.Constants;
 import com.donomobile.utils.DonationTypeObject;
 import com.donomobile.utils.Keys;
-import com.donomobile.utils.Logger;
 import com.donomobile.utils.MerchantObject;
 import com.donomobile.utils.PaymentFlags;
 import com.donomobile.utils.Security;
@@ -39,20 +45,19 @@ import com.donomobileapp.R;
 public class ConfirmPayment extends BaseActivity {
 
     private Cards selectedCard;
-    
+	private ListView typesListView;
+
     private TextView myTotalPayment;
     private TextView myPaymentUsed;
 	private ProgressDialog loadingDialog;
 	private boolean justAddedCard;
     private EditText myPinText;
-    private TextView textEnterPin;
     private String decryptedCC;
-    private AlertDialog newUserDialog;
     private AlertDialog pinDialog;
-    private int myPaymentId;
 	private String myPIN;
+	private ArrayAdapter<DonationTypeObject> adapter;
 
-	private TextView titleText;
+	private double myPaymentId;
 	private TextView paymentLabel;
 	private TextView totalLabel;
 	
@@ -60,7 +65,16 @@ public class ConfirmPayment extends BaseActivity {
 	private boolean isConfirmingPayment = false;
 	
 	private MerchantObject myMerchant;
+	private TextView titleTextOne;
+	private TextView titleTextTwo;
+	private Boolean shouldChargeFee;
+	private ArrayList<DonationTypeObject> selectedPaying;
    
+	private Boolean isAnonymous;
+	private Boolean isMakeDefault;
+	
+	private CheckBox defaultLocationCheckBox;
+	private CheckBox anonymousCheckBox;
     
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -79,10 +93,10 @@ public class ConfirmPayment extends BaseActivity {
 			myPaymentUsed = (TextView) findViewById(R.id.my_payment_used);
 			myPaymentUsed.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
-			textEnterPin = (TextView) findViewById(R.id.text_enter_pin);
-			textEnterPin.setTypeface(ArcMobileApp.getLatoLightTypeface());
+	
+			typesListView = (ListView) findViewById(R.id.listView1);
 			
-			myPinText = (EditText) findViewById(R.id.confirm_pin_text);
+			myPinText = (EditText) findViewById(R.id.editText1);
 			myPinText.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			myPinText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(6) });
 
@@ -99,21 +113,87 @@ public class ConfirmPayment extends BaseActivity {
 			confirmButton = (Button) findViewById(R.id.button_email);
 			confirmButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
+			
+			titleTextOne = (TextView) findViewById(R.id.titleTextOne);
+			titleTextOne.setTypeface(ArcMobileApp.getLatoLightTypeface());
+
+			titleTextTwo = (TextView) findViewById(R.id.titleTextTwo);
+			titleTextTwo.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+			titleTextTwo.setText("for " + myMerchant.merchantName);
+			
+			selectedPaying = new ArrayList<DonationTypeObject>();
+			
+		
+			//.setVisibility(View.INVISIBLE);
+
+			if (justAddedCard){
+			//	myPinText.setVisibility(View.INVISIBLE);
+				
+			}else{
+				//getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+			}
+
+			shouldChargeFee = false;
+			if (myMerchant.chargeFee){
+				
+				if (myMerchant.donationAmount < myMerchant.convenienceFeeCap){
+					shouldChargeFee = true;
+					
+					DonationTypeObject tmp = new DonationTypeObject();
+					tmp.isProcessingFee = true;
+					tmp.amountPaying = myMerchant.convenienceFee;
+					tmp.percentPaying = 1.0;
+					
+					myMerchant.donationTypes.add(tmp);
+				}
+			}
+			
+			
 			for (int i = 0; i  < myMerchant.donationTypes.size(); i++){
 				
 				DonationTypeObject donation = myMerchant.donationTypes.get(i);
-				Logger.d("PERCENT: *****************: " + donation.percentPaying);
+				
+				if (donation.percentPaying > 0){
+					selectedPaying.add(donation);
+				}
 
 			}
-			if (justAddedCard){
-				textEnterPin.setVisibility(View.GONE);
-				myPinText.setVisibility(View.GONE);
+			setLabels();
+			
+			
+			populateListView();
+			registerClickCallback();
+			
+			
+			anonymousCheckBox = (CheckBox) findViewById(R.id.anonymousCheck);
+			anonymousCheckBox.setTypeface(ArcMobileApp.getLatoLightTypeface());
+			
+			defaultLocationCheckBox = (CheckBox) findViewById(R.id.defaultCheck);
+			defaultLocationCheckBox.setTypeface(ArcMobileApp.getLatoLightTypeface());
+			
+			
+			
+            ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
+
+			if (myPrefs.getString(Keys.DEFAULT_CHURCH_ID) != null && myPrefs.getString(Keys.DEFAULT_CHURCH_ID).length() > 0){
+				defaultLocationCheckBox.setChecked(false);
+			}else{
+				defaultLocationCheckBox.setChecked(true);
+
+			}
+			
+			
+			String customerToken = myPrefs.getString(Keys.CUSTOMER_TOKEN);
+
+			if(customerToken == null || customerToken.length() == 0){
+				//guest, hide the anonymouscheckbox
+				anonymousCheckBox.setVisibility(View.INVISIBLE);
 				
 			}else{
-				getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-			}
+				anonymousCheckBox.setVisibility(View.VISIBLE);
 
-			setLabels();
+			}
+			
 		} catch (Exception e) {
 			(new CreateClientLogTask("ConfirmPayment.onCreate", "Exception Caught", "error", e)).execute();
 
@@ -135,7 +215,12 @@ public class ConfirmPayment extends BaseActivity {
 	private void setLabels(){
 		
 		try {
-			myTotalPayment.setText(String.format("$%.2f", myMerchant.donationAmount));
+			
+			double totalAmount = myMerchant.donationAmount;
+			if (shouldChargeFee){
+				totalAmount += myMerchant.convenienceFee;
+			}
+			myTotalPayment.setText(String.format("$%.2f", totalAmount));
 			myPaymentUsed.setText(selectedCard.getCardId());
 		} catch (Exception e) {
 			(new CreateClientLogTask("ConfirmPayment.setLabels", "Exception Caught", "error", e)).execute();
@@ -143,11 +228,26 @@ public class ConfirmPayment extends BaseActivity {
 		}
 	}
 	
+	
+	public void onClickPin(View view) {
+
+		toastShort("Your card pin is the numeric PIN you entered when saving this card.  If you do not remember your PIN, please add a new form of payment.");
+		
+	}
 	public void onMakePaymentClicked(View view) {
 		
 		try {
 			
 			if (!isConfirmingPayment){
+				
+				
+				if (defaultLocationCheckBox.isChecked()){
+                    ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
+                    myPrefs.putAndCommitString(Keys.DEFAULT_CHURCH_ID, myMerchant.merchantId);
+				}
+				
+				
+				
 				isConfirmingPayment = true;
 				
 				String cardNumber = "";
@@ -249,10 +349,15 @@ public class ConfirmPayment extends BaseActivity {
 			String splitType = PaymentFlags.SplitType.DOLLAR.toString();
 			
 
-			myPinText.setText("");
+			//.setText("");
 			
 			double grandTotal = myMerchant.donationAmount;
-			CreatePayment newPayment = new CreatePayment(myMerchant.merchantId, customerId, myMerchant.invoiceId, grandTotal, grandTotal, 0.0, account, type, cardType, expiration, pin, null, splitType, null, null, myMerchant.donationTypes);
+			
+			double gratuity = 0.0;
+			if (shouldChargeFee){
+				gratuity = myMerchant.convenienceFee;
+			}
+			CreatePayment newPayment = new CreatePayment(myMerchant.merchantId, customerId, myMerchant.invoiceId, grandTotal, grandTotal, gratuity, account, type, cardType, expiration, pin, null, splitType, null, null, myMerchant.donationTypes);
 
 			MakePaymentTask task = new MakePaymentTask(token, newPayment, getApplicationContext()) {
 				@Override
@@ -660,6 +765,106 @@ public class ConfirmPayment extends BaseActivity {
     	 
     	  
     	}
+     
+     
+     
+     private void populateListView() {
+ 		adapter = new MyListAdapter();
+ 		ListView list = (ListView) findViewById(R.id.listView1);
+ 		list.setAdapter(adapter);
+ 	}
+     
+     private class MyListAdapter extends ArrayAdapter<DonationTypeObject> {
+ 		public MyListAdapter() {
+ 			super(ConfirmPayment.this, R.layout.donation_selector_row, selectedPaying);
+ 		}
+
+ 		@Override
+ 		public View getView(int position, View convertView, ViewGroup parent) {
+ 			// Make sure we have a view to work with (may have been given null)
+ 			try {
+ 				
+ 				
+ 				View itemView = convertView;
+ 				if (itemView == null) {
+ 					itemView = getLayoutInflater().inflate(R.layout.confirm_payment_row, parent, false);
+ 				}
+ 				
+ 				// Find the car to work with.
+ 				DonationTypeObject currentItem = selectedPaying.get(position);
+ 				
+ 				
+ 				TextView name = (TextView) itemView.findViewById(R.id.textView1);
+ 				name.setTypeface(ArcMobileApp.getLatoLightTypeface());
+ 				
+ 				if (currentItem.isProcessingFee){
+ 					name.setText("Processing Fee (?)");
+ 				}else{
+ 	 				name.setText(currentItem.description);
+
+ 				}
+ 				
+ 				TextView amount = (TextView) itemView.findViewById(R.id.textView2);
+ 				amount.setTypeface(ArcMobileApp.getLatoLightTypeface());
+ 				amount.setText(String.format("%.2f", currentItem.amountPaying));
+ 			
+ 		
+ 				
+ 				return itemView;
+ 				
+ 				
+ 			} catch (Exception e) {
+ 			
+ 				(new CreateClientLogTask("ConfirmPayment.MyListAdapter.getView", "Exception Caught", "error", e)).execute();
+ 				return convertView;
+
+ 			}
+ 		}				
+ 	}
+ 	
+ 	
+ 	private void registerClickCallback() {
+ 		
+ 		
+ 		try {
+ 			
+ 			typesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+ 				@Override
+ 				public void onItemClick(AdapterView<?> parent, View viewClicked,
+ 						int position, long id) {
+ 					
+ 					try {
+
+ 						DonationTypeObject type = selectedPaying.get(position);
+
+ 						
+ 						if (type.isProcessingFee){
+ 							toastShort("Due to the cost of processing credit card transactions, a $" + String.format("%.2f", myMerchant.convenienceFee) + " fee will be charged on all donations less than $" +
+ 						    String.format("%.2f", myMerchant.convenienceFeeCap));
+ 						}else{
+ 						}
+ 						
+ 					
+
+ 						
+ 					
+ 					} catch (Exception e) {
+
+ 						(new CreateClientLogTask("ConfirmPayment.onRegisterClickCallBack.onItemClick", "Exception Caught", "error", e)).execute();
+
+ 					}
+ 					
+ 				
+ 				}
+ 			});
+ 			
+ 		
+ 		} catch (Exception e) {
+
+ 			(new CreateClientLogTask("ConfirmPayment.registerClickCallback", "Exception Caught", "error", e)).execute();
+
+ 		}
+ 	}
 
     
 }

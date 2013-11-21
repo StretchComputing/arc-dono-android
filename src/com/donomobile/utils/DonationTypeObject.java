@@ -12,6 +12,8 @@ public class DonationTypeObject implements Serializable {
 	public String description;
 	public double percentPaying;
 	public Boolean isSelected;
+	public double amountPaying;
+	public Boolean isProcessingFee;
 	
 	public DonationTypeObject() {
 
@@ -20,6 +22,9 @@ public class DonationTypeObject implements Serializable {
 		shouldDisplay = false;
 		percentPaying = 0.0;
 		isSelected = false;
+		
+		amountPaying = 0.0;
+		isProcessingFee = false;
 	}
 
 }

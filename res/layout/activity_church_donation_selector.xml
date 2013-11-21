@@ -2,51 +2,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ChurchDonationSelector" >
 
-    <TextView
-        android:id="@+id/location_name_text"
+    <RelativeLayout
+        android:id="@+id/topLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="43dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="0dp"
-        android:text="Medium Text"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:background="@color/donoorange" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/location_name_text"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
-        android:text="@string/which_areas_string"
-        android:textColor="@color/darkGray" />
+        <TextView
+            android:id="@+id/howmuchtop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:text="@string/which_areas_string"
+            android:textColor="@color/white"
+            android:textSize="13sp" />
 
-    <TextView
-        android:id="@+id/donation_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/location_name_text"
-        android:layout_below="@+id/textView1"
-        android:layout_marginTop="0dp"
-        android:text="@string/select_apply_string"
-        android:textColor="@color/darkGray"
-        android:textSize="11sp" />
+        <TextView
+            android:id="@+id/location_name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/howmuchtop"
+            android:layout_centerHorizontal="true"
+            android:text="Medium Text"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
 
     <Button
         android:id="@+id/continue_button"
+        style="@style/DonoOrangeStyle"
         android:layout_width="150dp"
         android:layout_height="45dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="6dp"
         android:layout_marginTop="5dp"
-        android:background="@drawable/i_button_grey"
+        android:background="@drawable/dono_button_orange"
         android:onClick="onContinueClicked"
         android:text="@string/continueString" />
 
@@ -55,11 +55,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/continue_button"
-        android:layout_below="@+id/donation_type"
+        android:layout_below="@+id/topLayout"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="10dp" >
-
+        android:layout_marginBottom="5dp" 
+        android:listSelector="@android:color/transparent"
+        >
     </ListView>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="2dp"
+        android:layout_above="@+id/continue_button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/darkGray" >
+
+    </RelativeLayout>
 
 </RelativeLayout>

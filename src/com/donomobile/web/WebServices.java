@@ -534,7 +534,9 @@ public class WebServices {
 					itemJson.put("Amount", 1.0);
 					itemJson.put("ItemId", donation.donationId);
 					
-					myArrayList.add(itemJson);
+					if (donation.percentPaying > 0 && !donation.isProcessingFee){
+						myArrayList.add(itemJson);
+					}
 				}
 				
 				
@@ -551,7 +553,7 @@ public class WebServices {
 
 			Logger.d("CREATE PAYMENT JSON =\n\n" + jsonString);
 			
-			resp = this.getResponse(url, jsonString, token);
+			//resp = this.getResponse(url, jsonString, token);
 			Logger.d("|arc-web-services|", "CREATE PAYMENT RESP = " + resp);
 			return resp;
 		} catch (Exception e) {

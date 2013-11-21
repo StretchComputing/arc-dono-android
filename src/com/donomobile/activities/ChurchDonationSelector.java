@@ -28,7 +28,6 @@ public class ChurchDonationSelector extends BaseActivity {
 	private ListView typesListView;
 	private TextView titleTextView;
 	private TextView explainTextView;
-	private TextView subExplainTextView;
 	private MerchantObject myMerchant;
 	private ArrayAdapter<DonationTypeObject> adapter;
     private boolean isGoingConfirm = false;
@@ -41,19 +40,18 @@ public class ChurchDonationSelector extends BaseActivity {
 		typesListView = (ListView) findViewById(R.id.types_list_view);
 		
 		titleTextView = (TextView) findViewById(R.id.location_name_text);
-		titleTextView.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+		titleTextView.setTypeface(ArcMobileApp.getLatoLightTypeface());
 
-		explainTextView = (TextView) findViewById(R.id.textView1);
-		subExplainTextView = (TextView) findViewById(R.id.donation_type);
-		subExplainTextView.setTypeface(ArcMobileApp.getLatoLightTypeface());
-		explainTextView.setTypeface(ArcMobileApp.getLatoLightTypeface());
+		explainTextView = (TextView) findViewById(R.id.howmuchtop);
+		explainTextView.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 		
 		
 		myMerchant =  (MerchantObject) getIntent().getSerializableExtra(Constants.VENUE);
 		
 		
 		
-		titleTextView.setText(myMerchant.merchantName);
+		explainTextView.setText(myMerchant.merchantName);
+	
 
 		populateListView();
 		registerClickCallback();
@@ -76,7 +74,7 @@ public class ChurchDonationSelector extends BaseActivity {
 	
 	private class MyListAdapter extends ArrayAdapter<DonationTypeObject> {
 		public MyListAdapter() {
-			super(ChurchDonationSelector.this, R.layout.payment_item_row, myMerchant.donationTypes);
+			super(ChurchDonationSelector.this, R.layout.donation_selector_row, myMerchant.donationTypes);
 		}
 
 		@Override

@@ -15,6 +15,15 @@ public class MerchantObject implements Serializable {
 	public double donationAmount;
 	public String invoiceId;
 	
+	public double quickDonateOne;
+	public double quickDonateTwo;
+	public double quickDonateThree;
+	public double quickDonateFour;
+	
+	public Boolean chargeFee;
+	public double convenienceFee;
+	public double convenienceFeeCap;
+	
 	public MerchantObject() {
 		// TODO Auto-generated constructor stub
 		merchantName = "";
@@ -23,6 +32,16 @@ public class MerchantObject implements Serializable {
 		donationTypes = new ArrayList<DonationTypeObject>();
 		donationAmount = 0.0;
 		invoiceId = "";
+		
+		quickDonateOne = 0.0;
+		quickDonateTwo = 0.0;
+		quickDonateThree = 0.0;
+		quickDonateFour = 0.0;
+		
+		chargeFee = false;
+		convenienceFee = 0.0;
+		convenienceFeeCap = 0.0;
+
 	}
 
 }

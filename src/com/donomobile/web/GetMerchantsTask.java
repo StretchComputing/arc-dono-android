@@ -140,7 +140,38 @@ public class GetMerchantsTask extends AsyncTask<Void, Void, Void> {
 					
 				}
 				
+				if (result.has(WebKeys.CHARGE_CONVENIENCE_FEE)){
+					
+					myMerchant.chargeFee = result.getBoolean(WebKeys.CHARGE_CONVENIENCE_FEE);
+					myMerchant.convenienceFee = result.getDouble(WebKeys.CONVENIENCE_FEE);
+					myMerchant.convenienceFeeCap = result.getDouble(WebKeys.CONVENIENCE_FEE_CAP);
+
+				}
 				
+				
+				if (result.has(WebKeys.QUICKPAY)){
+					
+					JSONArray quickPayDetails = result.getJSONArray(WebKeys.QUICKPAY);  
+					
+					 for (int j = 0; j < quickPayDetails.length(); j++){
+		                    
+		                    JSONObject quickPayObject = quickPayDetails.getJSONObject(j);
+		                    
+		                    if (j == 0) {
+		                    	myMerchant.quickDonateOne = quickPayObject.getDouble(WebKeys.VALUE);
+		                    }else if (j == 1){
+		                    	myMerchant.quickDonateTwo = quickPayObject.getDouble(WebKeys.VALUE);
+
+		                    }else if (j == 2){
+		                    	myMerchant.quickDonateThree = quickPayObject.getDouble(WebKeys.VALUE);
+
+		                    }else if (j == 3){
+		                    	myMerchant.quickDonateFour = quickPayObject.getDouble(WebKeys.VALUE);
+
+		                    }
+		                }
+
+				}
 				if (result.has(WebKeys.INVOICE_DETAILS)){
 					
 					JSONArray invoiceDetails = result.getJSONArray(WebKeys.INVOICE_DETAILS);  

@@ -24,6 +24,7 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -59,9 +60,19 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
     private boolean justAddedCard;
 	private ArrayList<Cards> cards;
     private Cards selectedCard;
+    ImageButton rightImageButton;
+    ImageButton leftImageButton;
+    private TextView textView1;
+    private TextView muchDonateTop;
 
     private Boolean isGoingConfirm = false;
     
+    
+    public double myQuickOne;
+    public double myQuickTwo;
+    public double myQuickThree;
+    public double myQuickFour;
+
     
 	Handler handler = new Handler();
 
@@ -104,16 +115,55 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
 		    }
 		});
 		
+		textView1 = (TextView)findViewById(R.id.titleTextOne);
+		textView1.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+
+		muchDonateTop = (TextView)findViewById(R.id.muchDonateTop);
+		muchDonateTop.setTypeface(ArcMobileApp.getLatoLightTypeface());
+
 		views = new ArrayList<View>();
 		viewIndexes = new ArrayList<Integer>();
 		
+		rightImageButton = (ImageButton) findViewById(R.id.imageButton1);
+		leftImageButton = (ImageButton) findViewById(R.id.imageButton2);
+
 		myMerchant =  (MerchantObject) getIntent().getSerializableExtra(Constants.VENUE);
 
+		
+		 if (myMerchant.quickDonateFour <= 100) {
+	            myQuickOne = 5.0;
+	            myQuickTwo = 10.0;
+	            myQuickThree = 15.0;
+	            myQuickFour = 25.0;
+	            
+	        }else if (myMerchant.quickDonateFour <= 200){
+	        	myQuickOne = 10.0;
+	        	myQuickTwo = 25.0;
+	        	myQuickThree = 50.0;
+	        	myQuickFour = 75.0;
+	        }else{
+	        	myQuickOne = 25.0;
+	        	myQuickTwo = 50.0;
+	        	myQuickThree = 75.0;
+	        	myQuickFour = 100.0;
+	        }
+		 
+		 
+		textView1.setText(myMerchant.merchantName);
+		
 		createDonationLayout();
 		
         handler.postDelayed(runnableTwo, 500);
 
+        
+        leftImageButton.setVisibility(View.INVISIBLE);
 
+        
+        
+       
+        
+        
+        
 	}
 	
 	
@@ -169,18 +219,18 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
 			DonationTypeObject donationType = myMerchant.donationTypes.get(index);
 			 
 		
-			TextView nameText = (TextView) rLayout.findViewById(R.id.textView1);
+			TextView nameText = (TextView) rLayout.findViewById(R.id.topLineText);
 			nameText.setText(donationType.description);
-			
 			
 			EditText input = (EditText) rLayout.findViewById(R.id.editText1);
 			input.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			input.setFilters(new InputFilter[] { new CurrencyFilter() });
 			
-			TextView dollarSign = (TextView) rLayout.findViewById(R.id.textView2);
+			TextView dollarSign = (TextView) rLayout.findViewById(R.id.titleTextTwo);
 			dollarSign.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
-			Button quickOne = (Button) rLayout.findViewById(R.id.button2);
+			Button quickOne = (Button) rLayout.findViewById(R.id.quickOne);
+			quickOne.setText(String.format("$%.0f", myQuickOne));
 			quickOne.setOnClickListener(new Button.OnClickListener() {
 			    public void onClick(View v) {
 			            //Do stuff here
@@ -188,7 +238,8 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
 			    }
 			});
 			
-			Button quickTwo = (Button) rLayout.findViewById(R.id.Button02);
+			Button quickTwo = (Button) rLayout.findViewById(R.id.quickTwo);
+			quickTwo.setText(String.format("$%.0f", myQuickTwo));
 			quickTwo.setOnClickListener(new Button.OnClickListener() {
 			    public void onClick(View v) {
 			            //Do stuff here
@@ -196,7 +247,8 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
 			    }
 			});
 			
-			Button quickThree = (Button) rLayout.findViewById(R.id.Button03);
+			Button quickThree = (Button) rLayout.findViewById(R.id.quickThree);
+			quickThree.setText(String.format("$%.0f", myQuickThree));
 			quickThree.setOnClickListener(new Button.OnClickListener() {
 			    public void onClick(View v) {
 			            //Do stuff here
@@ -205,7 +257,8 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
 			});
 			
 					
-			Button quickFour = (Button) rLayout.findViewById(R.id.Button01);
+			Button quickFour = (Button) rLayout.findViewById(R.id.quickFour);
+			quickFour.setText(String.format("$%.0f", myQuickFour));
 			quickFour.setOnClickListener(new Button.OnClickListener() {
 			    public void onClick(View v) {
 			            //Do stuff here
@@ -224,6 +277,7 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
 	
 	public void onRightClicked(View v) {
 		
+		
 		if (currentIndex < totalSelected -1){
 			currentIndex++;
 			myScrollView.smoothScrollTo(screenwidth * currentIndex, 0);
@@ -231,11 +285,23 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
 			RelativeLayout myLayout = (RelativeLayout) views.get(currentIndex);
 			EditText nameText = (EditText) myLayout.findViewById(R.id.editText1);
 			nameText.requestFocus();
+			leftImageButton.setVisibility(View.VISIBLE);
+
 		}
+		
+		if (currentIndex == (totalSelected - 1)){
+	        rightImageButton.setVisibility(View.INVISIBLE);
+		}else{
+	        rightImageButton.setVisibility(View.VISIBLE);
+
+		}
+		
+		
 
 	}
 	
 	public void onLeftClicked(View v) {
+
 
 		if (currentIndex > 0){
 			currentIndex--;
@@ -243,8 +309,17 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
 			RelativeLayout myLayout = (RelativeLayout) views.get(currentIndex);
 			EditText nameText = (EditText) myLayout.findViewById(R.id.editText1);
 			nameText.requestFocus();
+	        rightImageButton.setVisibility(View.VISIBLE);
+
 		}
 		
+
+		if (currentIndex == 0){
+	        leftImageButton.setVisibility(View.INVISIBLE);
+		}else{
+			leftImageButton.setVisibility(View.VISIBLE);
+
+		}
 	}
 	
 	
@@ -252,7 +327,7 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
 
 		RelativeLayout myLayout = (RelativeLayout) views.get(currentIndex);
 		EditText nameText = (EditText) myLayout.findViewById(R.id.editText1);
-		nameText.setText("15.00");
+		nameText.setText(String.format("%.2f", myQuickOne));
 		onRightClicked(null);
 	}
 	
@@ -260,14 +335,14 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
 
 		RelativeLayout myLayout = (RelativeLayout) views.get(currentIndex);
 		EditText nameText = (EditText) myLayout.findViewById(R.id.editText1);
-		nameText.setText("25.00");
+		nameText.setText(String.format("%.2f", myQuickTwo));
 		onRightClicked(null);
 	}
 	
 	public void onQuickThree() {
 		RelativeLayout myLayout = (RelativeLayout) views.get(currentIndex);
 		EditText nameText = (EditText) myLayout.findViewById(R.id.editText1);
-		nameText.setText("50.00");
+		nameText.setText(String.format("%.2f", myQuickThree));
 		onRightClicked(null);
 
 	}
@@ -276,7 +351,7 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
 
 		RelativeLayout myLayout = (RelativeLayout) views.get(currentIndex);
 		EditText nameText = (EditText) myLayout.findViewById(R.id.editText1);
-		nameText.setText("75.00");
+		nameText.setText(String.format("%.2f", myQuickFour));
 		onRightClicked(null);
 	}
 
@@ -314,6 +389,7 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
 			Logger.d("Total: " + donationAmount);
 			Logger.d("Percent Paying: " + thisDonationAmount/donationAmount);
 			donation.percentPaying = thisDonationAmount/donationAmount;
+			donation.amountPaying = thisDonationAmount;
 		}
 	
 		

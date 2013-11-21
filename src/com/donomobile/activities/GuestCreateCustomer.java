@@ -59,7 +59,7 @@ public class GuestCreateCustomer extends BaseActivity {
 			
 			button1 = (Button) findViewById (R.id.resendButton);
 			button1.setTypeface(ArcMobileApp.getLatoBoldTypeface());
-			button2 = (Button) findViewById (R.id.button2);
+			button2 = (Button) findViewById (R.id.quickOne);
 			button2.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
 			titleText = (TextView) findViewById(R.id.remainingText);

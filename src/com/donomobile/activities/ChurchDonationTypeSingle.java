@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -26,7 +27,6 @@ import com.donomobile.domain.Cards;
 import com.donomobile.utils.Constants;
 import com.donomobile.utils.CurrencyFilter;
 import com.donomobile.utils.DonationTypeObject;
-import com.donomobile.utils.Logger;
 import com.donomobile.utils.MerchantObject;
 import com.donomobile.web.rskybox.AppActions;
 import com.donomobile.web.rskybox.CreateClientLogTask;
@@ -36,11 +36,16 @@ public class ChurchDonationTypeSingle extends BaseActivity {
 
 	private TextView locationName;
 	private TextView howMuchString;
-	private TextView donationType;
 	private TextView dollarSign;
 	private TextView quickDonate;
 	private double donationAmount;
     private boolean justAddedCard;
+    
+    Button quickButtonOne;
+    Button quickButtonTwo;
+    Button quickButtonThree;
+    Button quickButtonFour;
+
 
 	private EditText dollarAmount;
 	
@@ -54,49 +59,66 @@ public class ChurchDonationTypeSingle extends BaseActivity {
     
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_church_donation_type_single);
 		
-		locationName = (TextView)findViewById(R.id.location_name_text);
-		locationName.setTypeface(ArcMobileApp.getLatoBoldTypeface());
-
-		howMuchString = (TextView)findViewById(R.id.textView1);
-		howMuchString.setTypeface(ArcMobileApp.getLatoLightTypeface());
-
-		donationType = (TextView)findViewById(R.id.donation_type);
-		donationType.setTypeface(ArcMobileApp.getLatoLightTypeface());
-
-		dollarSign = (TextView)findViewById(R.id.TextView01);
-		dollarSign.setTypeface(ArcMobileApp.getLatoLightTypeface());
-
-		quickDonate = (TextView)findViewById(R.id.textView2);
-		quickDonate.setTypeface(ArcMobileApp.getLatoBoldTypeface());
-
-
-		dollarAmount = (EditText)findViewById(R.id.editText1);
-		dollarAmount.setTypeface(ArcMobileApp.getLatoBoldTypeface());
-		dollarAmount.setFilters(new InputFilter[] { new CurrencyFilter() });
-
-		
-		myMerchant =  (MerchantObject) getIntent().getSerializableExtra(Constants.VENUE);
-
-		locationName.setText(myMerchant.merchantName);
-		
-		
-		if (myMerchant.donationTypes.size() == 1){
-			myDonationType = myMerchant.donationTypes.get(0);
-		}else{
+		try{
+			super.onCreate(savedInstanceState);
+			setContentView(R.layout.activity_church_donation_type_single);
 			
-			for (int i = 0; i < myMerchant.donationTypes.size(); i++){
-				DonationTypeObject tmp = myMerchant.donationTypes.get(i);
-				if (tmp.isSelected){
-					myDonationType = tmp;
-					break;
+			locationName = (TextView)findViewById(R.id.location_name_text);
+			locationName.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+
+			howMuchString = (TextView)findViewById(R.id.howmuchtop);
+			howMuchString.setTypeface(ArcMobileApp.getLatoLightTypeface());
+
+
+
+			dollarSign = (TextView)findViewById(R.id.TextView01);
+			dollarSign.setTypeface(ArcMobileApp.getLatoLightTypeface());
+
+			quickDonate = (TextView)findViewById(R.id.titleTextTwo);
+			quickDonate.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+
+
+			dollarAmount = (EditText)findViewById(R.id.editText1);
+			dollarAmount.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+			dollarAmount.setFilters(new InputFilter[] { new CurrencyFilter() });
+
+			
+			myMerchant =  (MerchantObject) getIntent().getSerializableExtra(Constants.VENUE);
+
+			locationName.setText("to " + myMerchant.merchantName);
+			
+			
+			quickButtonOne = (Button) findViewById(R.id.quickOne);
+			quickButtonOne.setText(String.format("$%.0f", myMerchant.quickDonateOne));
+			
+			quickButtonTwo = (Button) findViewById(R.id.quickTwo);
+			quickButtonTwo.setText(String.format("$%.0f", myMerchant.quickDonateTwo));
+
+			quickButtonThree = (Button) findViewById(R.id.quickThree);
+			quickButtonThree.setText(String.format("$%.0f", myMerchant.quickDonateThree));
+
+			quickButtonFour = (Button) findViewById(R.id.quickFour);
+			quickButtonFour.setText(String.format("$%.0f", myMerchant.quickDonateFour));
+
+
+			if (myMerchant.donationTypes.size() == 1){
+				myDonationType = myMerchant.donationTypes.get(0);
+			}else{
+				
+				for (int i = 0; i < myMerchant.donationTypes.size(); i++){
+					DonationTypeObject tmp = myMerchant.donationTypes.get(i);
+					if (tmp.isSelected){
+						myDonationType = tmp;
+						break;
+					}
 				}
 			}
+			
+		}catch(Exception e){
+			(new CreateClientLogTask("ChurchDonationTypeSingle.onContinueButtonClicked", "Exception Caught", "error", e)).execute();
+
 		}
-		
-		donationType.setText("toward " + myDonationType.description);
 
 	}
 
@@ -141,28 +163,30 @@ public class ChurchDonationTypeSingle extends BaseActivity {
 	
 	public void onQuickOne(View v) {
 
-		donationAmount = 50.0;
+		donationAmount = myMerchant.quickDonateOne;
 		goToPayment();
 	}
 	
 	public void onQuickTwo(View v) {
-		donationAmount = 75.0;
+		donationAmount = myMerchant.quickDonateTwo;
 		goToPayment();
 	}
 	
 	
 	public void onQuickThree(View v) {
 
-		donationAmount = 100.0;
+		donationAmount = myMerchant.quickDonateThree;
 		goToPayment();
 	}
 	
 	public void onQuickFour(View v) {
-		donationAmount = 200.0;
+		donationAmount = myMerchant.quickDonateFour;
 		goToPayment();
 	}
 	
 	private void goToPayment(){
+		
+		dollarAmount.setText(String.format("%.2f", donationAmount));
 		
 		    cards = DBController.getCards(getContentProvider());
 
@@ -363,6 +387,7 @@ public class ChurchDonationTypeSingle extends BaseActivity {
 				isGoingConfirm = true;
 				myMerchant.donationAmount = donationAmount;
 				myDonationType.percentPaying = 1.0;
+				myDonationType.amountPaying = donationAmount;
 				Intent confirmPayment = new Intent(getApplicationContext(), ConfirmPayment.class);
 				confirmPayment.putExtra(Constants.SELECTED_CARD, selectedCard);
 				confirmPayment.putExtra(Constants.VENUE, myMerchant);				

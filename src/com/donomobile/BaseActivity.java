@@ -8,7 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
@@ -83,7 +85,8 @@ public class BaseActivity extends SlidingFragmentActivity {
 	        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 
 	        
-	        
+	        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#F5F5F5")));
+
 			 Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 			        @Override
 			        public void uncaughtException(Thread paramThread, Throwable paramThrowable) {

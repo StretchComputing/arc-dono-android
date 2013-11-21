@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="false"
-        android:layout_below="@+id/textView2"
+        android:layout_below="@+id/titleTextTwo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:gravity="center_horizontal"
@@ -64,7 +64,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <CheckBox
-        android:id="@+id/checkBox1"
+        android:id="@+id/defaultCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -76,7 +76,7 @@
         android:id="@+id/location_name_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/checkBox1"
+        android:layout_below="@+id/defaultCheck"
         android:layout_centerHorizontal="true"
         android:text="@string/show_options_explain"
         android:textAppearance="?android:attr/textAppearanceSmall"
@@ -84,7 +84,7 @@
         android:textSize="10sp" />
 
     <CheckBox
-        android:id="@+id/checkBox2"
+        android:id="@+id/anonymousCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -92,10 +92,10 @@
         android:text="@string/default_string" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/titleTextTwo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/checkBox2"
+        android:layout_below="@+id/anonymousCheck"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="0dp"
         android:text="@string/turn_off_default_explain"

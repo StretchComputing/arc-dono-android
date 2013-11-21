@@ -40,5 +40,24 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">16dp</item>
     </style>
+    
+    <style name="DonoBlueStyle" parent="@android:style/Widget.Button">
+        <item name="android:textAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/donoblue</item>
+    </style>
+    
+     <style name="DonoOrangeStyle" parent="@android:style/Widget.Button">
+        <item name="android:textAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/donoorange</item>
+    </style>
+    
+      <style name="DonoGreenStyle" parent="@android:style/Widget.Button">
+        <item name="android:textAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/donogreen</item>
+    </style>
+    
 
 </resources>
