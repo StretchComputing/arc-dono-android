@@ -8,10 +8,11 @@
         android:id="@+id/row_title"
         android:layout_width="wrap_content"
         android:layout_height="46dp"
+        android:layout_marginLeft="20dp"
         android:layout_weight="1"
-        android:gravity="center"
+        android:gravity="left|center_vertical"
         android:text="Medium Text"
-        android:textColor="@color/dutchblue"
+        android:textColor="@color/white"
         android:textSize="20sp" />
 
 </LinearLayout>

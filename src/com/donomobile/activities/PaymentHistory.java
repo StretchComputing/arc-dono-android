@@ -36,7 +36,7 @@ public class PaymentHistory extends BaseActivity {
 	private Boolean isFirstLoad;
 	private ArrayList<PaymentHistoryObject> payments;
 	private ArrayAdapter<PaymentHistoryObject> adapter;
-
+	private TextView errorText;
 	private ListView list;
 
 	@Override
@@ -46,14 +46,21 @@ public class PaymentHistory extends BaseActivity {
 			setContentView(R.layout.activity_payment_history);
 			
 			list = (ListView) findViewById(R.id.paymentsList);
-
+			errorText = (TextView) findViewById(R.id.history_not_found);
+			errorText.setVisibility(View.INVISIBLE);
+			errorText.setText("No donation history found.");
 			isFirstLoad = true;
+			
+			setActionBarTitle("History");
+
 			
 		} catch (NotFoundException e) {
 
 			(new CreateClientLogTask("PaymentHistory.onCreate", "Exception Caught", "error", e)).execute();
 
 		}
+		
+		
 	}
 
 	
@@ -98,10 +105,7 @@ public class PaymentHistory extends BaseActivity {
 				date.setText(getReadableDate(currentItem.invoiceDate));
 				date.setTypeface(ArcMobileApp.getLatoLightTypeface());
 
-				// You Pay:
-				TextView invoiceNumber = (TextView) itemView.findViewById(R.id.p_check_number);
-				invoiceNumber.setText("Check #: " + currentItem.invoiceNumber);
-				invoiceNumber.setTypeface(ArcMobileApp.getLatoLightTypeface());
+			
 
 		
 				
@@ -131,7 +135,7 @@ public class PaymentHistory extends BaseActivity {
 	protected void onResume() {
 		super.onResume();
 		loadingDialog = new ProgressDialog(PaymentHistory.this);
-		loadingDialog.setTitle("Getting Payments");
+		loadingDialog.setTitle("Getting Donations");
 		loadingDialog.setMessage("Please Wait...");
 		loadingDialog.setCancelable(false);
 		
@@ -168,7 +172,6 @@ public class PaymentHistory extends BaseActivity {
 						
 							AppActions.add("Home - Get Payments Succeeded - Number Of Payments:" + payments.size());
 
-							Logger.d("POPULATING LIST VIEW **********");
 							PaymentHistory.this.populateListView();
 							PaymentHistory.this.registerClickCallback();
 
@@ -176,10 +179,8 @@ public class PaymentHistory extends BaseActivity {
 						}else{
 							AppActions.add("Home - Get Payments Failed - Error Code:" + errorCode);
 
-							//Remove carousel view?
-						//	scrollView.setVisibility(View.INVISIBLE);
-						//	currentMerchantText.setVisibility(View.INVISIBLE);
-						//	currentMerchantAddressText.setVisibility(View.INVISIBLE);
+				
+							Logger.d("Error Code: " + errorCode);
 
 							
 							if (errorCode != 0){
@@ -187,7 +188,7 @@ public class PaymentHistory extends BaseActivity {
 								String errorMsg = "";
 								
 								if(errorCode == 999) {
-					                errorMsg = "Can not find payments.";
+					                errorMsg = "Can not find donations.";
 					            } else {
 					                errorMsg = ErrorCodes.ARC_ERROR_MSG;
 					            }
@@ -197,8 +198,8 @@ public class PaymentHistory extends BaseActivity {
 								toastShort(errorMsg);
 								
 							}else{
-								toastShort("Error retrieving payment history.");
-
+								//toastShort("No donations were found in your history.");
+								errorText.setVisibility(View.VISIBLE);
 							}
 
 
@@ -209,7 +210,7 @@ public class PaymentHistory extends BaseActivity {
 						//currentMerchantText.setVisibility(View.INVISIBLE);
 						//currentMerchantAddressText.setVisibility(View.INVISIBLE);
 					//	
-						toastShort("Error retrieving payment history.");
+						toastShort("Error retrieving donation history.");
 
 						(new CreateClientLogTask("PaymentHistory.getPaymentHistory.onPostExecute", "Exception Caught", "error", e)).execute();
 

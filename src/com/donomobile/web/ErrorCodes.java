@@ -24,6 +24,8 @@ public final class ErrorCodes {
 	public static final int INVALID_EXPIRATION_DATE = 610;
 	public static final int UNKOWN_ISIS_ERROR = 699;
 	public static final int DUPLICATE_TRANSACTION = 612;
+	public static final int INVALID_SECURITY_PIN = 626;
+
 
 	//Micros
 	public static final int CARD_ALREADY_PROCESSED = 628;
@@ -35,7 +37,7 @@ public final class ErrorCodes {
 	public static final int NETWORK_ERROR = 999;
 	public static final int MAX_RETRIES_EXCEEDED = 1000;
 	
-	public static final String ARC_ERROR_MSG = "Dutch is experiencing network issues, please try again.";
+	public static final String ARC_ERROR_MSG = "Dono is experiencing network issues, please try again.";
 
 
 }

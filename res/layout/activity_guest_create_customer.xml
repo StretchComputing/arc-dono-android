@@ -58,25 +58,27 @@
          
     <Button
         android:id="@+id/resendButton"
+        style="@style/DonoOrangeStyle"
         android:layout_width="130dp"
         android:layout_height="46dp"
-        android:layout_toRightOf="@+id/center_layout"
         android:layout_below="@+id/guest_password_textv"
-        android:layout_marginTop="10dp"
         android:layout_marginLeft="25dp"
-        android:background="@drawable/i_button_grey"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/center_layout"
+        android:background="@drawable/dono_button_orange"
         android:onClick="onCreateClicked"
         android:text="@string/create_string" />
 
     <Button
         android:id="@+id/quickOne"
+        style="@style/DonoOrangeStyle"
         android:layout_width="130dp"
         android:layout_height="46dp"
-        android:layout_marginLeft="25dp"
         android:layout_alignBaseline="@+id/resendButton"
         android:layout_alignBottom="@+id/resendButton"
+        android:layout_marginLeft="25dp"
         android:layout_toLeftOf="@+id/center_layout"
-        android:background="@drawable/i_button_grey"
+        android:background="@drawable/dono_button_orange"
         android:onClick="onNoThanksClicked"
         android:text="@string/nothanks_string" />
 

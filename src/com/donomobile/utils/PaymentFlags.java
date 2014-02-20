@@ -7,7 +7,7 @@ public final class PaymentFlags {
 		N,   //N: Diner's
 		M,   //M: MasterCard
 		A,   //A: American Express
-		D,   //D: Discovery
+		D,   //D: Discover
 		Z    //Z: Dwolla
 	}
 	

@@ -161,7 +161,8 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
         
         
        
-        
+		setActionBarTitle("Multiple Donations");
+
         
         
 	}
@@ -302,6 +303,7 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
 	
 	public void onLeftClicked(View v) {
 
+		
 
 		if (currentIndex > 0){
 			currentIndex--;
@@ -419,7 +421,7 @@ public void showCardIo(){
 	
 	try {
 		
-
+		/*
 		Intent scanIntent = new Intent(this, CardIOActivity.class);
 		// required for authentication with card.io
 		scanIntent.putExtra(CardIOActivity.EXTRA_APP_TOKEN, Constants.MY_CARDIO_APP_TOKEN);
@@ -427,6 +429,15 @@ public void showCardIo(){
 		scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_CVV, true); 
 		scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_ZIP, false); 
 		startActivityForResult(scanIntent, Constants.SCAN_REQUEST_CODE);
+		
+		*/
+		myMerchant.donationAmount = donationAmount;
+
+		Intent single = new Intent(getApplicationContext(), FundsEntry.class);
+		single.putExtra(Constants.VENUE, myMerchant);				
+		startActivity(single);
+		
+		
 	} catch (Exception e) {
 		(new CreateClientLogTask("ChurchDonationTypeSingle.showCardIO", "Exception Caught", "error", e)).execute();
 
@@ -498,8 +509,8 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 				goConfirmPayment();
 				
 			} else {
-				resultDisplayStr = "\nScan was canceled.\n";
-				showInfoDialog(resultDisplayStr);
+				//resultDisplayStr = "\nScan was canceled.\n";
+				//showInfoDialog(resultDisplayStr);
 				return;
 			}
 		}
@@ -547,11 +558,11 @@ private void showAlertDialog(){
 	  try {
 		List<String> listItems = new ArrayList<String>();
 
-		  
+		  listItems.add("+ New Card");
+
 		  for (int i = 0; i < cards.size(); i++){
 			  Cards currentCard = cards.get(i);
 			  
-			  listItems.add("+ New Card");
 			  
 			  if (currentCard.getCardName() != null && currentCard.getCardName().length() > 0){
 		

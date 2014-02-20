@@ -35,12 +35,13 @@
 
     <Button
         android:id="@+id/resendButton"
+        style="@style/DonoOrangeStyle"
         android:layout_width="120dp"
         android:layout_height="46dp"
         android:layout_alignRight="@+id/register_email_text"
         android:layout_below="@+id/register_password_text"
         android:layout_marginTop="22dp"
-        android:background="@drawable/i_button_grey"
+        android:background="@drawable/dono_button_orange"
         android:onClick="onLogInClicked"
         android:text="@string/login" />
 

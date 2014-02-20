@@ -44,6 +44,8 @@ public class UserLogin extends BaseActivity {
 			loginButton = (Button) findViewById(R.id.resendButton);
 			loginButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 
+			setActionBarTitle("Login");
+
 			
 		} catch (Exception e) {
 			(new CreateClientLogTask("UserLogin.onCreate", "Exception Caught", "error", e)).execute();
@@ -147,7 +149,7 @@ public class UserLogin extends BaseActivity {
 								toastShort("Invalid username/password, please try again.");
 
 							}else{
-								toastShort("Error logging in.  Dutch may be experiencing network issues, please try again.");
+								toastShort("Error logging in.  Dono may be experiencing network issues, please try again.");
 
 							}
 						}

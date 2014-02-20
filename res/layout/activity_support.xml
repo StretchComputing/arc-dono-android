@@ -15,7 +15,7 @@
         android:layout_alignParentTop="false"
         android:layout_below="@+id/titleTextTwo"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="60dp"
         android:gravity="center_horizontal"
         android:text="@string/support_subtitle"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -23,12 +23,13 @@
 
     <Button
         android:id="@+id/button_email"
+        style="@style/DonoOrangeStyle"
         android:layout_width="150dp"
         android:layout_height="46dp"
         android:layout_below="@+id/current_merchant"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:background="@drawable/i_button_grey"
+        android:background="@drawable/dono_button_orange"
         android:onClick="emailNow"
         android:text="@string/send_email_button" />
 
@@ -44,12 +45,13 @@
 
     <Button
         android:id="@+id/button_call"
+        style="@style/DonoOrangeStyle"
         android:layout_width="150dp"
         android:layout_height="46dp"
         android:layout_below="@+id/merchantNameText"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="36dp"
-        android:background="@drawable/i_button_grey"
+        android:background="@drawable/dono_button_orange"
         android:onClick="callNow"
         android:text="@string/call_string" />
 
@@ -64,31 +66,11 @@
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <CheckBox
-        android:id="@+id/defaultCheck"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="false"
-        android:text="@string/show_options_text" />
-
-    <TextView
-        android:id="@+id/location_name_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/defaultCheck"
-        android:layout_centerHorizontal="true"
-        android:text="@string/show_options_explain"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@color/darkGray"
-        android:textSize="10sp" />
-
-    <CheckBox
         android:id="@+id/anonymousCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/location_name_text"
+        android:layout_marginTop="20dp"
         android:text="@string/default_string" />
 
     <TextView

@@ -47,12 +47,15 @@ public class EditServer extends BaseActivity {
 		titleText.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 		
 		loadingDialog = new ProgressDialog(EditServer.this);
-		loadingDialog.setTitle("Getting Dutch Servers");
+		loadingDialog.setTitle("Getting Dono Servers");
 		loadingDialog.setMessage("Please Wait...");
 		loadingDialog.setCancelable(false);
 		loadingDialog.show();
 		
 		getDutchServers();
+		
+		setActionBarTitle("Edit Server");
+
 	}
 
 	@Override

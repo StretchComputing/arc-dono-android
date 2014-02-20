@@ -25,15 +25,14 @@ import com.donomobile.ArcMobileApp;
 import com.donomobile.BaseActivity;
 import com.donomobile.db.controllers.DBController;
 import com.donomobile.domain.Cards;
-import com.donomobile.domain.Check;
 import com.donomobile.utils.ArcPreferences;
 import com.donomobile.utils.Constants;
-import com.donomobile.utils.CurrencyFilter;
 import com.donomobile.utils.Keys;
 import com.donomobile.utils.Logger;
 import com.donomobile.utils.Security;
 import com.donomobile.web.CreateUserTask;
 import com.donomobile.web.ErrorCodes;
+import com.donomobile.web.UpdateCustomerTask;
 import com.donomobile.web.rskybox.AppActions;
 import com.donomobile.web.rskybox.CreateClientLogTask;
 import com.donomobileapp.R;
@@ -74,6 +73,8 @@ public class UserCreateNew extends BaseActivity {
 			
 			titleText.setTypeface(ArcMobileApp.getLatoLightTypeface());
 			registerButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+
+			setActionBarTitle("Register");
 
 		
 		} catch (Exception e) {
@@ -119,49 +120,45 @@ public class UserCreateNew extends BaseActivity {
 		}
 	}
 
-
 	private void login(){
-		
 		
 		try {
 			loadingDialog.show();
-			String sendEmail = (String) emailTextView.getText().toString();
-			String sendPassword = (String) passwordTextView.getText().toString();
-
-			String firstName = "test";
-			String lastName = "test";
-			
-			Logger.d("CREATING NEW USER WITH EMAIL: " + sendEmail + " AND PASSWORD: " + sendPassword);
-			
-			CreateUserTask createUserTask = new CreateUserTask(sendEmail, sendPassword, firstName, lastName, false, getApplicationContext()) {
+			UpdateCustomerTask createUserTask = new UpdateCustomerTask(emailTextView.getText().toString(), passwordTextView.getText().toString(), getApplicationContext()) {
 				@Override
 				protected void onPostExecute(Void result) {
 					try {
 						super.onPostExecute(result);
 						UserCreateNew.this.loadingDialog.hide();
-						isCreating = false;
+						
 						int errorCode = getErrorCode();
-
-						if (getFinalSuccess() && errorCode == 0){
+						isCreating = false;
+						
+						if (getFinalSuccess()){
 							
-							AppActions.add("User Create New - Register Succeeded");
+							AppActions.add("Guest Create Customer - Register Successful");
 
 							ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
 							
-							myPrefs.putAndCommitString(Keys.CUSTOMER_TOKEN, getDevToken());
-							myPrefs.putAndCommitString(Keys.CUSTOMER_ID, getDevCustomerId());
+							String guestId = myPrefs.getString(Keys.GUEST_ID);
+
+							myPrefs.putAndCommitString(Keys.CUSTOMER_TOKEN, getNewCustomerToken());
+							myPrefs.putAndCommitString(Keys.CUSTOMER_ID, guestId);
 							myPrefs.putAndCommitString(Keys.CUSTOMER_EMAIL, UserCreateNew.this.emailTextView.getText().toString());
 							
 							
+							myPrefs.putAndCommitString(Keys.GUEST_TOKEN, "");
+							myPrefs.putAndCommitString(Keys.GUEST_ID, "");
+							
+							
+							
+
 							getCurrentServer();
 							
 							showSuccessDialog();
 							
-
-							
 							
 						}else{
-							
 							AppActions.add("User Create New - Register Failed - Error Code: " + errorCode);
 
 							if (errorCode != 0){
@@ -187,10 +184,10 @@ public class UserCreateNew extends BaseActivity {
 
 							}
 
+
 						}
 					} catch (Exception e) {
-						(new CreateClientLogTask("UserCreateNew.login.onPostExecute", "Exception Caught", "error", e)).execute();
-
+						(new CreateClientLogTask("GuestCreateCustomer.register.onPostExecute", "Exception Caught", "error", e)).execute();
 					}
 					
 					
@@ -198,13 +195,16 @@ public class UserCreateNew extends BaseActivity {
 			};
 			createUserTask.execute();
 		} catch (Exception e) {
-			(new CreateClientLogTask("UserCreateNew.login", "Exception Caught", "error", e)).execute();
-
+			(new CreateClientLogTask("GuestCreateCustomer.register", "Exception Caught", "error", e)).execute();
 		}
-	     
+		
 		
 	}
-	
+
+
+
+
+
 	
 	
 	private void showSuccessDialog() {
@@ -318,14 +318,16 @@ public class UserCreateNew extends BaseActivity {
 			final EditText input = (EditText) makePaymentView.findViewById(R.id.paymentInput);
 			
 			
-			
 			TextView paymentTitle = (TextView) makePaymentView.findViewById(R.id.paymentTitle);
-			paymentTitle.setText("Please create a PIN");
+			paymentTitle.setText("Your PIN will be used to securely encrypt your card.");
 			input.setGravity(Gravity.CENTER | Gravity.BOTTOM);
+			
+	
 
 			input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(6) });
 			TextView remainingBalance = (TextView) makePaymentView.findViewById(R.id.paymentRemaining);
-			remainingBalance.setVisibility(View.GONE);
+			//remainingBalance.setVisibility(View.GONE);
+			remainingBalance.setText("Please create a PIN");
 			
 			
 			int currentapiVersion = android.os.Build.VERSION.SDK_INT;

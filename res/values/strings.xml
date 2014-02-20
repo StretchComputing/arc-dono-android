@@ -60,15 +60,15 @@
     <string name="privacy_string">Privacy Policy</string>
     <string name="start_using_string">Start Using dono!</string>
     <string name="welcome_string">Welcome to dono!</string>
-    <string name="step_one_text">1. Enter your check number.</string>
-    <string name="step_two_text">2. View the bill.</string>
-    <string name="step_three_text">3. Split the check!</string>
-    <string name="init_sub_title">Pay your restaurant bill in 3 easy steps:</string>
+    <string name="step_one_text">1. Find your location.</string>
+    <string name="step_two_text">2. Enter an amount.</string>
+    <string name="step_three_text">3. Confirm your donation!</string>
+    <string name="init_sub_title">Make a donation in 3 easy steps:</string>
     <string name="title_activity_support">Support</string>
     <string name="support_title">dono support</string>
     <string name="support_subtitle">Questions or Feedback?  Send us an email or give us a call:</string>
     <string name="send_email_button">Send Email</string>
-    <string name="dutch_email">support@arcmobileapp.com</string>
+    <string name="dutch_email">support@arcmobile.co</string>
     <string name="call_string">Call Now</string>
     <string name="dutch_phone">(708) 320-9272</string>
     <string name="receipt_description">Receipt Image</string>
@@ -93,7 +93,7 @@
     <string name="guest_create_explain">If you create an account, we can send you email receipts of your transactions!</string>
     <string name="create_string">Create</string>
     <string name="nothanks_string">No Thanks</string>
-    <string name="no_payments_string">No payments have been made on this invoice.</string>
+    <string name="no_payments_string">No donations have been made on this invoice.</string>
     <string name="title_activity_terms">TermsActivity</string>
     <string name="check_help_string_one">Can\'t find your check #?</string>
     <string name="check_help_two">"Click the "</string>
@@ -142,5 +142,17 @@
     <string name="card_pin_string">Card PIN: (?)</string>
     <string name="anonymous_string">Make this donation anonymously</string>
     <string name="default_location_string">Make this my default location</string>
+    <string name="title_activity_default_location">DefaultLocation</string>
+    <string name="make_donation_string">Make Donation</string>
+    <string name="view_locations_string">View All Locations</string>
+    <string name="view_history_string">View Donation History</string>
+    <string name="view_don_history">View Donation History</string>
+    <string name="my_default_string">My default location</string>
+    <string name="title_activity_funds_entry">FundsEntry</string>
+    <string name="payment_info_string">Enter your payment information</string>
+    <string name="card_number_placeholder">Card Number</string>
+    <string name="expiration_placeholder">Exp. (mm/yy)</string>
+    <string name="ccv_placeholder">CCV</string>
+    <string name="scan_card_string">Scan Card</string>
 
 </resources>

@@ -168,6 +168,7 @@ public class BaseActivity extends SlidingFragmentActivity {
 			sm.setBehindScrollScale(0.0f);
 			sm.setBehindCanvasTransformer(mTransformer);
 			sm.setBackgroundColor(0xFF393939);
+			sm.setBehindWidth(400);
 			
 			sm.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {
 			    public void onOpened() {
@@ -207,7 +208,12 @@ public class BaseActivity extends SlidingFragmentActivity {
 	
 	protected void initContentProvider() {
 		contentResolver = getContentResolver();
+		
+		
 		mProvider = contentResolver.acquireContentProviderClient(ArcProvider.CONTENT_URI);
+		
+		
+		
 	}
 
 	public ContentProviderClient getContentProvider() {
@@ -320,6 +326,7 @@ public class BaseActivity extends SlidingFragmentActivity {
 	}
 	
 	protected void setActionBarTitle(String title) {
+		//actionBar.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 		actionBar.setTitle(title);
 	}
 

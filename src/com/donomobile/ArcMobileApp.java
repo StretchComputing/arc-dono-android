@@ -1,5 +1,7 @@
 package com.donomobile;
 
+import java.util.ArrayList;
+
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,8 +11,10 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Typeface;
 
 import com.donomobile.utils.DateTimeFormatter;
+import com.donomobile.utils.MerchantObject;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
+import com.fedorvlasov.lazylist.ImageLoader;
 
 public class ArcMobileApp extends Application {
 	
@@ -22,6 +26,9 @@ public class ArcMobileApp extends Application {
 	private static Typeface latoBold;
 	private static Typeface latoLight;
 
+	public static ImageLoader imageLoader;
+	
+	private static ArrayList<MerchantObject> allMerchants;
 
     public ArcMobileApp() {
         instance = this;
@@ -36,6 +43,13 @@ public class ArcMobileApp extends Application {
  		latoLight = Typeface.createFromAsset(getAssets(), "fonts/Lato-Lig.ttf"); 
  	}
  	
+ 	public static ArrayList<MerchantObject> getAllMerchants(){
+ 		return allMerchants;
+ 	}
+ 	
+ 	public static void setAllMerchants(ArrayList<MerchantObject> newMerchants){
+ 		allMerchants = new ArrayList<MerchantObject>(newMerchants);
+ 	}
 	public static Typeface getModernPicsTypeface() {
 		return modernPics;
 	}
@@ -66,6 +80,9 @@ public class ArcMobileApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        
+        
+	    imageLoader=new ImageLoader(getApplicationContext());
         ArcMobileApp.context = getApplicationContext();
         initFonts();
         EasyTracker.getInstance().setContext(getApplicationContext()); // Initialize Google Analytics

@@ -20,7 +20,7 @@ public final class WebKeys {
 	public static final String INVOICE_DETAILS = "InvoiceDetails";
 	public static final String QUICKPAY = "QuickPay";
 	
-	
+	public static final String ANONYMOUS = "Anonymous";
 	public static final String MERCHANT_ID = "MerchantId";
 	public static final String INVOICE_NUMBER = "Number";
 	public static final String REQUEST_ID = "RequestId";

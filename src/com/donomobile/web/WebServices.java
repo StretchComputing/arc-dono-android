@@ -521,6 +521,10 @@ public class WebServices {
 			json.put(WebKeys.TAG, "");
 			json.put(WebKeys.NOTES, "");
 			
+			if (newPayment.isAnonymous){
+				json.put(WebKeys.ANONYMOUS, true);
+			}
+			
 			ArrayList<JSONObject> myArrayList = new ArrayList<JSONObject>();
 			
 			for (int i = 0; i < newPayment.getItems().size(); i++){
@@ -553,7 +557,7 @@ public class WebServices {
 
 			Logger.d("CREATE PAYMENT JSON =\n\n" + jsonString);
 			
-			//resp = this.getResponse(url, jsonString, token);
+			resp = this.getResponse(url, jsonString, token);
 			Logger.d("|arc-web-services|", "CREATE PAYMENT RESP = " + resp);
 			return resp;
 		} catch (Exception e) {

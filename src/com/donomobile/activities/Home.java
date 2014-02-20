@@ -8,7 +8,6 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources.NotFoundException;
 import android.graphics.Bitmap;
@@ -21,11 +20,8 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -43,16 +39,14 @@ import com.donomobile.ArcMobileApp;
 import com.donomobile.BaseActivity;
 import com.donomobile.utils.ArcPreferences;
 import com.donomobile.utils.Constants;
-import com.donomobile.utils.DonationTypeObject;
 import com.donomobile.utils.Keys;
+import com.donomobile.utils.Logger;
 import com.donomobile.utils.MerchantObject;
 import com.donomobile.web.ErrorCodes;
 import com.donomobile.web.GetMerchantsTask;
 import com.donomobile.web.rskybox.AppActions;
 import com.donomobile.web.rskybox.CreateClientLogTask;
 import com.donomobileapp.R;
-
-import com.fedorvlasov.lazylist.ImageLoader;
 
 public class Home extends BaseActivity {
 
@@ -68,8 +62,8 @@ public class Home extends BaseActivity {
 	private int currentImageWidth;
 	private boolean isGoingRestaurant = false;
 	private Boolean defaultBlank = false;
-    public ImageLoader imageLoader; 
-
+   // public ImageLoader imageLoader; 
+	private boolean isInitial = false;
 	
 	private LinearLayout mCarouselContainer;
 
@@ -85,7 +79,8 @@ public class Home extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		try {
 			
-	        imageLoader=new ImageLoader(getApplicationContext());
+			
+	       // imageLoader=new ImageLoader(getApplicationContext());
 
 			ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
 			
@@ -122,7 +117,7 @@ public class Home extends BaseActivity {
 			boolean didLogOut = getIntent().getBooleanExtra(Constants.LOGGED_OUT, false);
 			
 			if (didLogOut){
-				toastShort("Logout Successful!  You may continue to use Dutch as a guest.");
+				toastShort("Logout Successful!  You may continue to use dono as a guest.");
 			}
 			
 			/*
@@ -136,7 +131,19 @@ public class Home extends BaseActivity {
 
 			}
 			*/
+			setActionBarTitle("Locations");
+
 						
+			
+			try{
+				String isInit =  (String) getIntent().getSerializableExtra(Constants.IS_INIT);
+				if (isInit != null && isInit.equalsIgnoreCase("yes")){
+					isInitial = true;
+				}
+
+			}catch(Exception e){
+				
+			}
 		} catch (NotFoundException e) {
 			(new CreateClientLogTask("Home.onCreate", "Exception Caught", "error", e)).execute();
 
@@ -162,10 +169,13 @@ public class Home extends BaseActivity {
 						
 						merchants = getMerchants();
 						
-
+						
 						loadingDialog.hide();
 						if (merchants != null && merchants.size() > 0){
 						
+							
+							ArcMobileApp.setAllMerchants(merchants);
+							
 							AppActions.add("Home - Get Merchants Succeeded - Number Of Merchants:" + merchants.size());
 
 							MerchantObject merchant = merchants.get(0);
@@ -173,6 +183,35 @@ public class Home extends BaseActivity {
 						
 							populateListView();
 							registerClickCallback();
+							
+							
+							if (isInitial){
+								isInitial = false;
+								 ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
+									if (myPrefs.getString(Keys.DEFAULT_CHURCH_ID) != null && myPrefs.getString(Keys.DEFAULT_CHURCH_ID).length() > 0){
+										
+										for (int i = 0; i < merchants.size(); i++){
+											
+											MerchantObject tmpObject = merchants.get(i);
+											
+											if (tmpObject.merchantId.equalsIgnoreCase(myPrefs.getString(Keys.DEFAULT_CHURCH_ID))){
+												
+												Intent single = new Intent(getContext(), DefaultLocation.class);
+												single.putExtra(Constants.VENUE, tmpObject);
+												startActivity(single);
+												
+												break;
+											}
+
+										}
+										
+									}
+									
+							}
+					 		
+							
+							
+							
 										        
 						}else{
 							AppActions.add("Home - Get Merchants Failed - Error Code:" + errorCode);
@@ -227,13 +266,21 @@ public class Home extends BaseActivity {
 		//getTokensFromWeb();
 		isGoingRestaurant = false;
 		
-		loadingDialog = new ProgressDialog(Home.this);
-		loadingDialog.setTitle("Finding Nearby Locations");
-		loadingDialog.setMessage("Please Wait...");
-		loadingDialog.setCancelable(false);
-		loadingDialog.show();
+
 		
-		getMerchantsFromWeb();
+		
+		if (merchants == null || merchants.size() == 0){
+			
+			loadingDialog = new ProgressDialog(Home.this);
+			loadingDialog.setTitle("Finding Nearby Locations");
+			loadingDialog.setMessage("Please Wait...");
+			loadingDialog.setCancelable(false);
+			loadingDialog.show();
+			
+			
+			getMerchantsFromWeb();
+		}
+		
 	}
 
 	@Override
@@ -517,10 +564,40 @@ public class Home extends BaseActivity {
 			address.setTypeface(ArcMobileApp.getLatoLightTypeface());
 			address.setText(currentItem.merchantAddress);
 
+			//Logger.d("Current Id: " + currentItem.merchantId);
 			
 			ImageView image = (ImageView) itemView.findViewById(R.id.imageView1);
-			String url = "http://arc.dagher.mobi/Images/App/Logos/"+currentItem.merchantId+ ".jpg";
-	        imageLoader.DisplayImage(url, image);
+			
+			if (currentItem.merchantId.equalsIgnoreCase("16")){
+				 
+				image.setImageResource(R.drawable.sixteen);
+	            
+			} else if (currentItem.merchantId.equalsIgnoreCase("17")){
+			 
+				image.setImageResource(R.drawable.seventeen);
+
+			} else if (currentItem.merchantId.equalsIgnoreCase("15")){
+			 
+				image.setImageResource(R.drawable.fifteen);
+
+			} else if (currentItem.merchantId.equalsIgnoreCase("21")){
+			 
+				image.setImageResource(R.drawable.twentyone);
+
+			} else if (currentItem.merchantId.equalsIgnoreCase("20")){
+			 
+				image.setImageResource(R.drawable.twenty);
+
+			}else{
+			 
+				String url = "http://arc.dagher.mobi/Images/App/Promo/"+currentItem.merchantId+ ".png";
+		        ArcMobileApp.imageLoader.DisplayImage(url, image);
+			}
+			
+			
+			
+			
+			
 
 			//getImageForIndex(position, currentItem.merchantId);
 	

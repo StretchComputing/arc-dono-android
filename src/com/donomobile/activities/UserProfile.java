@@ -44,7 +44,8 @@ public class UserProfile extends BaseActivity {
 			AppActions.add("UserProfile - OnCreate");
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.activity_user_profile);
-			
+			setActionBarTitle("Profile");
+
 			loggedInView = (RelativeLayout) findViewById(R.id.logged_in_view);
 			loggedOutView = (RelativeLayout) findViewById(R.id.logged_out_view);
 			emailTextView = (TextView) findViewById(R.id.email_text);
@@ -64,9 +65,10 @@ public class UserProfile extends BaseActivity {
 			editServerButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			signOutButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			loginButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
-			createButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+		//	createButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 
 			
+
 			
 			
 			

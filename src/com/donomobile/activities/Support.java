@@ -57,8 +57,8 @@ public class Support extends BaseActivity {
 			phoneButton = (Button) findViewById(R.id.button_call);
 			phoneButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
-			donationOptionsCheckBox = (CheckBox) findViewById(R.id.defaultCheck);
-			donationOptionsCheckBox.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+			//donationOptionsCheckBox = (CheckBox) findViewById(R.id.defaultCheck);
+			//donationOptionsCheckBox.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 
 			defaultChurchCheckBox = (CheckBox) findViewById(R.id.anonymousCheck);
 			defaultChurchCheckBox.setTypeface(ArcMobileApp.getLatoBoldTypeface());
@@ -81,9 +81,9 @@ public class Support extends BaseActivity {
 			
 			//check boxes
 			
-			String skipDonationsOptions = myPrefs.getString(Keys.SKIP_DONATIONS_OPTIONS);
 			String defaultMerchantId = myPrefs.getString(Keys.DEFAULT_CHURCH_ID);
 
+			/*
 			if (skipDonationsOptions != null && skipDonationsOptions.length() > 0){
 				donationOptionsCheckBox.setChecked(false);
 			}else{
@@ -112,6 +112,7 @@ public class Support extends BaseActivity {
 		        }
 		    });
 			
+			*/
 			
 			if (defaultMerchantId != null && defaultMerchantId.length() > 0){
 				defaultChurchCheckBox.setChecked(true);
@@ -140,7 +141,8 @@ public class Support extends BaseActivity {
 		        }
 		    });
 			
-			
+			setActionBarTitle("Settings");
+
 			
 		} catch (Exception e) {
 			(new CreateClientLogTask("Support.onCreate", "Exception Caught", "error", e)).execute();

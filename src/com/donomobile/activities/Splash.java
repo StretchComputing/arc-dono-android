@@ -11,6 +11,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.donomobile.utils.ArcPreferences;
+import com.donomobile.utils.Constants;
 import com.donomobile.utils.Keys;
 import com.donomobile.web.rskybox.AppActions;
 import com.donomobile.web.rskybox.CreateClientLogTask;
@@ -63,7 +64,10 @@ public class Splash extends Activity {
 							
 							AppActions.add("Splash - Token Found - Going Home");
 
-							startActivity(new Intent(getApplicationContext(), Home.class));
+							Intent home = new Intent(getApplicationContext(), Home.class);
+							home.putExtra(Constants.IS_INIT, "yes");
+							startActivity(home);
+							
 
 						}
 						overridePendingTransition(0, 0);

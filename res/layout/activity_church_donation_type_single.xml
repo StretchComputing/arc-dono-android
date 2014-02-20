@@ -108,6 +108,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:background="@drawable/dono_button_blue"
+            android:onClick="onQuickFour"
             android:text="@string/two_hundred_string" />
 
         <Button

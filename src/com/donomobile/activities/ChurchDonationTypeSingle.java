@@ -27,6 +27,7 @@ import com.donomobile.domain.Cards;
 import com.donomobile.utils.Constants;
 import com.donomobile.utils.CurrencyFilter;
 import com.donomobile.utils.DonationTypeObject;
+import com.donomobile.utils.Logger;
 import com.donomobile.utils.MerchantObject;
 import com.donomobile.web.rskybox.AppActions;
 import com.donomobile.web.rskybox.CreateClientLogTask;
@@ -114,6 +115,9 @@ public class ChurchDonationTypeSingle extends BaseActivity {
 					}
 				}
 			}
+			
+			setActionBarTitle("Amount");
+
 			
 		}catch(Exception e){
 			(new CreateClientLogTask("ChurchDonationTypeSingle.onContinueButtonClicked", "Exception Caught", "error", e)).execute();
@@ -207,6 +211,7 @@ public class ChurchDonationTypeSingle extends BaseActivity {
 		
 		try {
 			
+			/*
 
 			Intent scanIntent = new Intent(this, CardIOActivity.class);
 			// required for authentication with card.io
@@ -215,6 +220,17 @@ public class ChurchDonationTypeSingle extends BaseActivity {
 			scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_CVV, true); 
 			scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_ZIP, false); 
 			startActivityForResult(scanIntent, Constants.SCAN_REQUEST_CODE);
+			*/
+			
+			myMerchant.donationAmount = donationAmount;
+			myDonationType.percentPaying = 1.0;
+			myDonationType.amountPaying = donationAmount;
+
+			Intent single = new Intent(getApplicationContext(), FundsEntry.class);
+			single.putExtra(Constants.VENUE, myMerchant);				
+			startActivity(single);
+			
+			
 		} catch (Exception e) {
 			(new CreateClientLogTask("ChurchDonationTypeSingle.showCardIO", "Exception Caught", "error", e)).execute();
 
@@ -286,8 +302,8 @@ public class ChurchDonationTypeSingle extends BaseActivity {
 					goConfirmPayment();
 					
 				} else {
-					resultDisplayStr = "\nScan was canceled.\n";
-					showInfoDialog(resultDisplayStr);
+					//resultDisplayStr = "\nScan was canceled.\n";
+					//showInfoDialog(resultDisplayStr);
 					return;
 				}
 			}
@@ -336,17 +352,19 @@ public class ChurchDonationTypeSingle extends BaseActivity {
 			List<String> listItems = new ArrayList<String>();
 
 			  
+			  listItems.add("+ New Card");
+
+			  
 			  for (int i = 0; i < cards.size(); i++){
 				  Cards currentCard = cards.get(i);
 				  
-				  listItems.add("+ New Card");
 				  
 				  if (currentCard.getCardName() != null && currentCard.getCardName().length() > 0){
 			
 						 listItems.add(currentCard.getCardName() +  " (" + currentCard.getCardLabel() + ") " +currentCard.getCardId());
 
 					}else{
-						  listItems.add(currentCard.getCardLabel() + currentCard.getCardId());
+						  listItems.add(currentCard.getCardLabel() + "  " + currentCard.getCardId());
 
 					}
 			  }

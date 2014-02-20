@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
 import android.content.res.Resources.NotFoundException;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -51,7 +52,6 @@ public class ConfirmPayment extends BaseActivity {
     private TextView myPaymentUsed;
 	private ProgressDialog loadingDialog;
 	private boolean justAddedCard;
-    private EditText myPinText;
     private String decryptedCC;
     private AlertDialog pinDialog;
 	private String myPIN;
@@ -70,9 +70,6 @@ public class ConfirmPayment extends BaseActivity {
 	private Boolean shouldChargeFee;
 	private ArrayList<DonationTypeObject> selectedPaying;
    
-	private Boolean isAnonymous;
-	private Boolean isMakeDefault;
-	
 	private CheckBox defaultLocationCheckBox;
 	private CheckBox anonymousCheckBox;
     
@@ -96,9 +93,7 @@ public class ConfirmPayment extends BaseActivity {
 	
 			typesListView = (ListView) findViewById(R.id.listView1);
 			
-			myPinText = (EditText) findViewById(R.id.editText1);
-			myPinText.setTypeface(ArcMobileApp.getLatoBoldTypeface());
-			myPinText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(6) });
+	
 
 			
 			//titleText = (TextView) findViewById(R.id.text_enter_pin);
@@ -126,8 +121,11 @@ public class ConfirmPayment extends BaseActivity {
 		
 			//.setVisibility(View.INVISIBLE);
 
+			//button01 = (Button) findViewById(R.id.button1);
+			
 			if (justAddedCard){
-			//	myPinText.setVisibility(View.INVISIBLE);
+				//myPinText.setVisibility(View.INVISIBLE);
+				//button01.setVisibility(View.INVISIBLE);
 				
 			}else{
 				//getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -194,6 +192,10 @@ public class ConfirmPayment extends BaseActivity {
 
 			}
 			
+			
+			setActionBarTitle("Confirm Donation");
+
+			
 		} catch (Exception e) {
 			(new CreateClientLogTask("ConfirmPayment.onCreate", "Exception Caught", "error", e)).execute();
 
@@ -256,11 +258,16 @@ public class ConfirmPayment extends BaseActivity {
 					AppActions.add("Confirm Payment - Make Payment Clicked - Just Added Card");
 
 					decryptedCC = selectedCard.getNumber();
+					
+					makePayment();
+
 				}else{
+					
+					//using a saved card, show pin dialog
 					try{
 						AppActions.add("Confirm Payment - Make Payment Clicked - Picked Stored Card");
 
-						decryptedCC = decryptCreditCardNumber(selectedCard.getNumber());
+						showPinToPay();
 
 					}catch(Exception e){
 						
@@ -268,18 +275,6 @@ public class ConfirmPayment extends BaseActivity {
 				}
 				
 				
-				if (decryptedCC.length() > 0){
-					
-					AppActions.add("Confirm Payment - Make Payment Clicked - Entered Correct PIN");
-
-					makePayment();
-				}else{
-					
-					AppActions.add("Confirm Payment - Make Payment Clicked - Entered Incorrect PIN");
-					isConfirmingPayment = false;
-
-					toastShort("Invalid PIN, please try again");
-				}
 			}
 			
 		} catch (Exception e) {
@@ -304,7 +299,7 @@ public class ConfirmPayment extends BaseActivity {
 		try{
 			Security s = new Security();
 	        //String decrypted = s.decrypt(myPinText.getText().toString(), encryptedNumber);
-	        String decrypted = s.decryptBlowfish(encryptedNumber, myPinText.getText().toString());
+	        String decrypted = s.decryptBlowfish(encryptedNumber, myPIN);
 			
 	        if (decrypted == null){
 	        	return "";
@@ -336,7 +331,13 @@ public class ConfirmPayment extends BaseActivity {
 			if (month.length() == 1) {
 				month = "0" + month;
 			}
-			String year = selectedCard.getExpirationYear().substring(2, 4);
+			String year = "";
+			if (selectedCard.getExpirationYear().length() == 2){
+				 year = selectedCard.getExpirationYear();
+			}else{
+				 year = selectedCard.getExpirationYear().substring(2, 4);
+
+			}
 			String expiration = month + "-" + year;
 			String pin = selectedCard.getCVV();
 			String type = PaymentFlags.PaymentType.CREDIT.toString();
@@ -357,7 +358,12 @@ public class ConfirmPayment extends BaseActivity {
 			if (shouldChargeFee){
 				gratuity = myMerchant.convenienceFee;
 			}
-			CreatePayment newPayment = new CreatePayment(myMerchant.merchantId, customerId, myMerchant.invoiceId, grandTotal, grandTotal, gratuity, account, type, cardType, expiration, pin, null, splitType, null, null, myMerchant.donationTypes);
+			
+			Boolean isAnonymous = false;
+			if (anonymousCheckBox.isChecked()){
+				isAnonymous = true;
+			}
+			CreatePayment newPayment = new CreatePayment(myMerchant.merchantId, customerId, myMerchant.invoiceId, grandTotal, grandTotal, gratuity, account, type, cardType, expiration, pin, null, splitType, null, null, myMerchant.donationTypes, isAnonymous);
 
 			MakePaymentTask task = new MakePaymentTask(token, newPayment, getApplicationContext()) {
 				@Override
@@ -374,7 +380,7 @@ public class ConfirmPayment extends BaseActivity {
 
 
 							
-							toastShort("Your payment has been processed successfully!");
+							toastShort("Your donation has been processed successfully!");
 
 							
 							ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
@@ -388,6 +394,7 @@ public class ConfirmPayment extends BaseActivity {
 
 								loadingDialog.dismiss();
 								
+								goNextScreen();
 								
 							}else{
 								
@@ -403,6 +410,7 @@ public class ConfirmPayment extends BaseActivity {
 									loadingDialog.dismiss();
 
 									
+									goNextScreen();
 
 									
 								}
@@ -428,7 +436,36 @@ public class ConfirmPayment extends BaseActivity {
 								
 								AppActions.add("Confirm Payment - Payment Failed - Error Code:" + errorCode);
 
-								if(errorCode == ErrorCodes.CANNOT_GET_PAYMENT_AUTHORIZATION) {
+								 if(errorCode == ErrorCodes.CANNOT_GET_PAYMENT_AUTHORIZATION) {
+								        
+									 toastShort("Invalid Credit Card - Your credidt card could not be authorized.  Please double check your card information and try again.");
+								      
+								     return;
+								        
+								        
+								} else if(errorCode == ErrorCodes.FAILED_TO_VALIDATE_CARD) {
+								        
+									 toastShort("Invalid Credit Card - Your credidt card could not be authorized.  Please double check your card information and try again.");
+
+								        return;
+								 } else if (errorCode == ErrorCodes.FIELD_FORMAT_ERROR){
+									 toastShort("Invalid Credit Card - Your credidt card could not be authorized.  Please double check your card information and try again.");
+
+								        return;
+								}else if(errorCode == ErrorCodes.INVALID_ACCOUNT_NUMBER) {
+								  
+									 toastShort("Invalid Card Number - The number you entered for this card is invalid.  Please double check your card information and try again.");
+
+								      return;
+								        
+								}else if(errorCode == ErrorCodes.INVALID_SECURITY_PIN) {
+									  
+										 toastShort("Invalid Security Pin - The CVV you entered for this card is invalid.  Please double check your card information and try again.");
+
+									      return;
+									        
+								}
+								else if(errorCode == ErrorCodes.CANNOT_GET_PAYMENT_AUTHORIZATION) {
 					                //errorMsg = @"Credit card not approved.";
 					                editCardOption = true;
 					            } else if(errorCode == ErrorCodes.FAILED_TO_VALIDATE_CARD) {
@@ -450,11 +487,15 @@ public class ConfirmPayment extends BaseActivity {
 					            } else if(errorCode == ErrorCodes.INVALID_AMOUNT) {
 					                errorMsg = "Invalid amount. Please re-enter payment and try again.";
 					            } else if(errorCode == ErrorCodes.INVALID_EXPIRATION_DATE) {
-					               // errorMsg = @"Invalid expiration date.";
-					                editCardOption = true;
+					              
+					            	 toastShort("Invalid Expiration Date - The expiration date you entered for this card is invalid.  Please double check your card information and try again.");
+
+								      return;
+								      
+								      
 					            }  else if (errorCode == ErrorCodes.UNKOWN_ISIS_ERROR){
 					               // editCardOption = YES;
-					                errorMsg = "Dutch Error, Try Again.";
+					                errorMsg = "Dono Error, Try Again.";
 					            }else if (errorCode == ErrorCodes.PAYMENT_MAYBE_PROCESSED){
 					                errorMsg = "This payment may have already processed.  To be sure, please wait 30 seconds and then try again.";
 					                displayAlert = true;
@@ -471,11 +512,11 @@ public class ConfirmPayment extends BaseActivity {
 					                displayAlert = true;
 					            }else if (errorCode == ErrorCodes.NETWORK_ERROR){
 					                networkError = true;
-					                errorMsg = "Dutch is having problems connecting to the internet.  Please check your connection and try again.  Thank you!";
+					                errorMsg = "Dono is having problems connecting to the internet.  Please check your connection and try again.  Thank you!";
 					                
 					            }else if (errorCode == ErrorCodes.NETWORK_ERROR_CONFIRM_PAYMENT){
 					                networkError = true;
-					                errorMsg = "Dutch experienced a problem with your internet connection while trying to confirm your payment.  Please check with your server to see if your payment was accepted.";
+					                errorMsg = "Dono experienced a problem with your internet connection while trying to confirm your payment.  Please check with your server to see if your payment was accepted.";
 					                
 					            }
 					            else {
@@ -633,7 +674,8 @@ public class ConfirmPayment extends BaseActivity {
 							try {
 								pinDialog.dismiss();
 								
-								//TODO - GO SOMEWHERE
+								
+								goNextScreen();
 							} catch (Exception e) {
 								(new CreateClientLogTask("ConfirmPayment.showPinDialog.onClickNegative", "Exception Caught", "error", e)).execute();
 
@@ -659,6 +701,154 @@ public class ConfirmPayment extends BaseActivity {
 	}
 	
 	
+	
+	private void showPinToPay() {
+		try {
+			
+			AppActions.add("Confirm Payment - Show PIN Dialog");
+
+			pinDialog = null;
+			
+			LayoutInflater factory = LayoutInflater.from(this);
+			final View makePaymentView = factory.inflate(R.layout.pin_dialog, null);
+			final EditText input = (EditText) makePaymentView.findViewById(R.id.paymentInput);
+			
+			
+			
+			TextView paymentTitle = (TextView) makePaymentView.findViewById(R.id.paymentTitle);
+			paymentTitle.setText("Please enter your PIN for this card.");
+			input.setGravity(Gravity.CENTER | Gravity.BOTTOM);
+
+			input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(6) });
+			TextView remainingBalance = (TextView) makePaymentView.findViewById(R.id.paymentRemaining);
+			remainingBalance.setText("Save your payment info?");
+			remainingBalance.setVisibility(View.GONE);
+			
+			
+			int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+			
+			//Set colors
+			if (currentapiVersion <= android.os.Build.VERSION_CODES.GINGERBREAD_MR1){
+
+				paymentTitle.setTextColor(getResources().getColor(R.color.white));
+				remainingBalance.setTextColor(getResources().getColor(R.color.white));
+
+			}
+			
+			
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(ConfirmPayment.this);
+			builder.setTitle(getString(R.string.app_dialog_title));
+			builder.setView(makePaymentView);
+			//builder.setIcon(R.drawable.logo);
+			builder.setCancelable(false);
+			builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+
+				}
+			});
+			
+			builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+
+				}
+			});
+			
+			builder.setOnCancelListener(new OnCancelListener() {
+
+				@Override
+				public void onCancel(DialogInterface dialog) {
+				}
+			});
+			pinDialog = builder.create();
+			
+			pinDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+			pinDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+				@Override
+				public void onShow(DialogInterface dialog) {
+
+					Button b = pinDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+					b.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View view) {
+							
+							try {
+								if (input.getText().toString().length() < 4){
+									toastShort("PIN must be at least 4 digits");
+								}else{
+									myPIN = input.getText().toString();
+									
+									decryptedCC = decryptCreditCardNumber(selectedCard.getNumber());
+
+									if (decryptedCC.length() > 0){
+										
+										AppActions.add("Confirm Payment - Make Payment Clicked - Entered Correct PIN");
+										pinDialog.dismiss();
+
+										makePayment();
+									}else{
+										
+										AppActions.add("Confirm Payment - Make Payment Clicked - Entered Incorrect PIN");
+										isConfirmingPayment = false;
+
+										toastShort("Invalid PIN, please try again");
+									}
+									
+									
+								}
+							} catch (Exception e) {
+								(new CreateClientLogTask("ConfirmPayment.showPinDialog.onClickPositive", "Exception Caught", "error", e)).execute();
+
+							}
+						
+							
+						}
+					});
+					
+					
+					Button c = pinDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+					c.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View view) {
+							
+							try {
+								pinDialog.dismiss();
+								isConfirmingPayment = false;
+								
+							} catch (Exception e) {
+								(new CreateClientLogTask("ConfirmPayment.showPinDialog.onClickNegative", "Exception Caught", "error", e)).execute();
+
+							}
+							
+						
+							
+						}
+					});
+					
+					
+					
+					
+					
+				}
+			});
+			pinDialog.show();
+		} catch (NotFoundException e) {
+			(new CreateClientLogTask("ConfirmPayment.showPinDialog", "Exception Caught", "error", e)).execute();
+
+		}
+		
+	}
+	
+	
+	
     public void refreshList(){
 		
 		try {
@@ -671,7 +861,8 @@ public class ConfirmPayment extends BaseActivity {
 			pinDialog.dismiss();
 			//refresh list
 			
-            //TODO - GO SOMEWHERE
+			goNextScreen();
+
 		} catch (Exception e) {
 			(new CreateClientLogTask("ConfirmPayment.refreshList", "Exception Caught", "error", e)).execute();
 
@@ -864,6 +1055,29 @@ public class ConfirmPayment extends BaseActivity {
  			(new CreateClientLogTask("ConfirmPayment.registerClickCallback", "Exception Caught", "error", e)).execute();
 
  		}
+ 	}
+
+ 	public void goNextScreen(){
+ 		
+ 		 ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
+
+			if (myPrefs.getString(Keys.DEFAULT_CHURCH_ID) != null && myPrefs.getString(Keys.DEFAULT_CHURCH_ID).length() > 0){
+				
+				//if you have a default church ID, go there
+			}else{
+
+
+			}
+			
+			
+			 Intent goBackHome = new Intent(getApplicationContext(), Home.class);
+             goBackHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+             startActivity(goBackHome);
+			
+		
+			
+			
+			
  	}
 
     

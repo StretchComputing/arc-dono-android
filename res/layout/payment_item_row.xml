@@ -7,11 +7,11 @@
         android:id="@+id/p_total_payment"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/p_check_number"
+        android:layout_alignBottom="@+id/p_date"
         android:layout_alignParentRight="true"
+        android:layout_marginBottom="0dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="2dp"
-        android:gravity="center_horizontal"
+        android:gravity="right"
         android:text="45653.00"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/green"
@@ -23,13 +23,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/p_total_payment"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_toLeftOf="@+id/p_total_payment"
+        android:layout_marginTop="8dp"
         android:maxWidth="30dp"
         android:text="Isis Lab Testing"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textSize="16sp"
+        android:textSize="17sp"
         android:textStyle="bold" />
 
     <TextView
@@ -38,21 +38,21 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/donation_description"
         android:layout_below="@+id/donation_description"
-        android:layout_marginTop="5dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="15dp"
         android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="13sp" />
 
-    <TextView
-        android:id="@+id/p_check_number"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/p_total_payment"
-        android:layout_alignBottom="@+id/p_date"
-        android:gravity="center_horizontal"
-        android:text="Small Text"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@color/darkGray"
-        android:textSize="13sp" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="8dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="false"
+        android:layout_below="@+id/p_date"
+        android:layout_centerHorizontal="true" >
+
+    </RelativeLayout>
 
 </RelativeLayout>

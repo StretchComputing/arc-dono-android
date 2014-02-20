@@ -150,7 +150,7 @@ public class WebServices {
 			
 			ApplicationInfo applicationInfo = ArcMobileApp.getContext().getApplicationInfo();
 			boolean isDebuggable = (0 != (applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE));
-			String localEndpoint = "dutch.android";
+			String localEndpoint = "dono.android";
 			if(isDebuggable) {localEndpoint = "dev." + localEndpoint;}
 			else             {localEndpoint = "prd." + localEndpoint;}
 			json.put(WebKeys.LOCAL_ENDPOINT, localEndpoint);
@@ -183,7 +183,7 @@ public class WebServices {
 				json.put(WebKeys.STACK_BACK_TRACE, steJsonArray);
 			}
 			
-			//resp = this.getResponse(url, json.toString());
+			resp = this.getResponse(url, json.toString());
 			Logger.d("|rskybox-web-services|", "CREATE CLIENT JSON INPUT = " + json.toString());
 			Logger.d("|rskybox-web-services|", "CREATE CLIENT LOG RESP = " + resp);
 			return resp;

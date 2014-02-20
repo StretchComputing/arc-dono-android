@@ -73,9 +73,11 @@ public class MakePaymentTask extends AsyncTask<Void, Void, Void> {
 				
 				if (!json.isNull(WebKeys.RESULTS)){
 					
+					
 					mResponseTicket = json.getString(WebKeys.RESULTS);
+
 					//6, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10
-					if(!checkPaymentConfirmation(6000) && mErrorCode == 0) {
+					if(!checkPaymentConfirmation(3000) && mErrorCode == 0) {
 						if(!checkPaymentConfirmation(2000) && mErrorCode == 0) {
 							if(!checkPaymentConfirmation(3000) && mErrorCode == 0) {
 								if(!checkPaymentConfirmation(3000) && mErrorCode == 0) {
@@ -136,6 +138,7 @@ public class MakePaymentTask extends AsyncTask<Void, Void, Void> {
 	
 	protected boolean checkPaymentConfirmation(int sleep) {
 		try{
+
 			Thread.sleep(sleep);
 			WebServices webService = new WebServices(new ArcPreferences(mContext).getServer());
 			mResponse = webService.confirmPayment(mToken, getResponseTicket());
@@ -177,7 +180,8 @@ public class MakePaymentTask extends AsyncTask<Void, Void, Void> {
 					mPaymentId = result.getInt(WebKeys.PAYMENT_ID);
 
 				}else{
-					mPaymentId = 0;
+					finalSuccess = false;
+					return false;
 				}
 
 				return true;

@@ -68,7 +68,8 @@ public class GuestCreateCustomer extends BaseActivity {
 			subText = (TextView) findViewById(R.id.help_item_text);
 			subText.setTypeface(ArcMobileApp.getLatoLightTypeface());
 			
-		
+			setActionBarTitle("New Account");
+
 			
 		}catch(Exception e){
 			(new CreateClientLogTask("GuestCreateCustomer.onCreate", "Exception Caught", "error", e)).execute();

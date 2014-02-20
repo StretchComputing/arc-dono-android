@@ -35,7 +35,6 @@ import com.donomobile.BaseActivity;
 import com.donomobile.db.controllers.DBController;
 import com.donomobile.domain.Cards;
 import com.donomobile.utils.Constants;
-import com.donomobile.utils.CurrencyFilter;
 import com.donomobile.utils.Logger;
 import com.donomobile.utils.Security;
 import com.donomobile.web.rskybox.AppActions;
@@ -84,7 +83,10 @@ public class Funds extends BaseActivity {
 			addButton = (Button)findViewById(R.id.add_card_button);
 			addButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 
-			initStoredCards();
+			//initStoredCards();
+			
+			setActionBarTitle("Credit Cards");
+
 		} catch (NotFoundException e) {
 			(new CreateClientLogTask("Funds.onCreate", "Exception Caught", "error", e)).execute();
 
@@ -228,6 +230,8 @@ public class Funds extends BaseActivity {
 	protected void onResume() {
 		super.onResume();
 		isAddingCard = false;
+		initStoredCards();
+
 	}
 
 	@Override
@@ -244,6 +248,11 @@ public class Funds extends BaseActivity {
 	public void onAddCardClick(View v) {
 		try {
 			
+			
+			Intent single = new Intent(getApplicationContext(), FundsEntry.class);
+			startActivity(single);
+			
+			/*
 			if (!isAddingCard){
 				isAddingCard = true;
 				AppActions.add("Funds - Add Card Clicked");
@@ -253,11 +262,14 @@ public class Funds extends BaseActivity {
 				// required for authentication with card.io
 				scanIntent.putExtra(CardIOActivity.EXTRA_APP_TOKEN, Constants.MY_CARDIO_APP_TOKEN);
 				scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_EXPIRY, true);
+				//scanIntent.putExtra(CardIOActivity.EXTRA_NO_CAMERA, true);
+
 				scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_CVV, true); 
 				scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_ZIP, false); 
 				startActivityForResult(scanIntent, Constants.SCAN_REQUEST_CODE);
 			}
 			
+			*/
 		} catch (Exception e) {
 			(new CreateClientLogTask("Funds.onAddCardClick", "Exception Caught", "error", e)).execute();
 
@@ -327,8 +339,8 @@ public class Funds extends BaseActivity {
 					showPinDialog();
 					
 				} else {
-					resultDisplayStr = "\nScan was canceled.\n";
-					showInfoDialog(resultDisplayStr);
+					//resultDisplayStr = "\nScan was canceled.\n";
+					//showInfoDialog(resultDisplayStr);
 					return;
 				}
 			}
@@ -516,6 +528,7 @@ public class Funds extends BaseActivity {
 		try {
 			//encrypt it
 			enteredCard.setNumber(encryptCardNumber(enteredCard.getNumber()));
+			
 			//save it
 			saveCard();
 			

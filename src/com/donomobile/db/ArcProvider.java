@@ -21,7 +21,8 @@ import com.donomobile.web.rskybox.CreateClientLogTask;
  */
 public class ArcProvider extends ContentProvider {
 
-	public static final Uri CONTENT_URI = Uri.parse("content://com.arcmobileapp.db.provider");
+	//public static final Uri CONTENT_URI = Uri.parse("content://com.arcmobileapp.db.provider");
+	public static final Uri CONTENT_URI = Uri.parse("content://com.donomobile.db.provider");
 
 	public static final int UNSAVED_ID = -1;
 

@@ -11,6 +11,7 @@ import android.os.RemoteException;
 import com.donomobile.db.provider.Table_Funds.FundsColumns;
 import com.donomobile.domain.Cards;
 import com.donomobile.utils.Encrypter;
+import com.donomobile.utils.Logger;
 import com.donomobile.web.rskybox.CreateClientLogTask;
 
 public class DBController {
@@ -18,9 +19,13 @@ public class DBController {
 	public static synchronized void saveCreditCard(ContentProviderClient mProvider, Cards newCard) {
     	ContentValues values = newCard.getContentValues();
         try {
+        	
+        	
             mProvider.insert(FundsColumns.CONTENT_URI, values);
         } catch (RemoteException e) {
 			(new CreateClientLogTask("DBController.saveCreditCard", "Exception Caught", "error", e)).execute();
+
+        }catch (Exception e){
 
         }
     }

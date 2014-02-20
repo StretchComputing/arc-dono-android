@@ -1,5 +1,7 @@
 package com.donomobile.fragments;
 
+import java.util.ArrayList;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,22 +14,28 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.donomobile.ArcMobileApp;
+import com.donomobile.activities.DefaultLocation;
 import com.donomobile.activities.Funds;
 import com.donomobile.activities.Home;
 import com.donomobile.activities.Support;
 import com.donomobile.activities.UserProfile;
-import com.donomobile.utils.Utils;
+import com.donomobile.utils.ArcPreferences;
+import com.donomobile.utils.Constants;
 import com.donomobile.utils.Enums.ModernPicTypes;
+import com.donomobile.utils.Keys;
+import com.donomobile.utils.Logger;
+import com.donomobile.utils.MerchantObject;
+import com.donomobile.utils.Utils;
 import com.donomobile.web.rskybox.AppActions;
 import com.donomobile.web.rskybox.CreateClientLogTask;
 import com.donomobileapp.R;
 
 public class MenuListFragment extends ListFragment {
+	
+	public MenuAdapter adapter;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.list, null);
@@ -36,12 +44,12 @@ public class MenuListFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		try {
 			super.onActivityCreated(savedInstanceState);
-			MenuAdapter adapter = new MenuAdapter(getActivity());
+			adapter = new MenuAdapter(getActivity());
 			adapter.add(new MenuItem(Utils.convertModernPicType(ModernPicTypes.World), "Home"));
 			adapter.add(new MenuItem(Utils.convertModernPicType(ModernPicTypes.Guy), "My Profile"));
 			adapter.add(new MenuItem(Utils.convertModernPicType(ModernPicTypes.Dollar), "Payment"));
 			adapter.add(new MenuItem(Utils.convertModernPicType(ModernPicTypes.Question), "Settings"));
-			adapter.add(new MenuItem(Utils.convertModernPicType(ModernPicTypes.Question), "Default Church"));
+			adapter.add(new MenuItem(Utils.convertModernPicType(ModernPicTypes.Question), "All Locations"));
 
 			//adapter.add(new MenuItem(Utils.convertModernPicType(ModernPicTypes.Girl), "Social"));
 			setListAdapter(adapter);
@@ -131,10 +139,10 @@ public class MenuListFragment extends ListFragment {
 			try {
 				switch(position) {
 				case 1:
-					goToProfile();				
+					goToProfile();	
 					break;
 				case 0:
-					goHome();
+					goDefault();
 					break;
 				case 2:
 					goToFunds();				
@@ -144,7 +152,7 @@ public class MenuListFragment extends ListFragment {
 					goAboutScreen();
 					break;
 				case 4:
-					goToSocial();
+					goHome();
 					break;
 				}
 			} catch (Exception e) {
@@ -154,6 +162,71 @@ public class MenuListFragment extends ListFragment {
 			
 		}
 		
+		private void goDefault(){
+			
+			try{
+				
+
+				ArcPreferences myPrefs = new ArcPreferences(getContext());
+
+				if (myPrefs.getString(Keys.DEFAULT_CHURCH_ID) != null && myPrefs.getString(Keys.DEFAULT_CHURCH_ID).length() > 0){
+					
+					//There is a Default
+					
+					ArrayList<MerchantObject> myList = new ArrayList<MerchantObject>(ArcMobileApp.getAllMerchants());
+					
+
+					if (myList.size() > 0){
+						
+
+						Boolean isFound = false;
+						for (int i = 0; i < myList.size(); i++){
+							
+
+							MerchantObject tmp = myList.get(i);
+
+							String defaultId = myPrefs.getString(Keys.DEFAULT_CHURCH_ID);
+							
+							if (defaultId.equalsIgnoreCase(tmp.merchantId)){
+								
+								goDefault(tmp);
+								isFound = true;
+								break;
+							}
+							
+						}
+						
+						if (!isFound){
+							goHome();
+
+						}
+						
+						
+					}else{
+
+						goHome();
+					}
+					
+					
+				}else{
+
+					goHome();
+				}
+				
+
+			}catch (Exception e){
+
+				goHome();
+			}
+		}
+		
+		
+		private void goDefault(MerchantObject merchObject){
+			
+			Intent single = new Intent(getContext(), DefaultLocation.class);
+			single.putExtra(Constants.VENUE, merchObject);
+			startActivity(single);
+		}
 		private void goToProfile(){
 			AppActions.add("Left Menu - Profile Clicked");
 			Intent funds = (new Intent(getContext(), UserProfile.class));
@@ -202,4 +275,6 @@ public class MenuListFragment extends ListFragment {
 		}
 
 	}
+	
+	
 }

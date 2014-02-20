@@ -8,6 +8,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".PaymentHistory" >
 
+     <TextView
+         android:id="@+id/history_not_found"
+         style="@style/ViewTitle"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="20dp"
+         android:gravity="center_horizontal"
+         android:text="@string/login"
+         android:textSize="17sp" />
+     
     <ListView
         android:id="@+id/paymentsList"
         android:layout_width="match_parent"

@@ -40,21 +40,24 @@ public class ChurchDonationSelector extends BaseActivity {
 		typesListView = (ListView) findViewById(R.id.types_list_view);
 		
 		titleTextView = (TextView) findViewById(R.id.location_name_text);
-		titleTextView.setTypeface(ArcMobileApp.getLatoLightTypeface());
+		titleTextView.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 
 		explainTextView = (TextView) findViewById(R.id.howmuchtop);
-		explainTextView.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+		explainTextView.setTypeface(ArcMobileApp.getLatoLightTypeface());
 		
 		
 		myMerchant =  (MerchantObject) getIntent().getSerializableExtra(Constants.VENUE);
 		
 		
 		
-		explainTextView.setText(myMerchant.merchantName);
+		titleTextView.setText(myMerchant.merchantName);
 	
 
 		populateListView();
 		registerClickCallback();
+		
+		setActionBarTitle("Donation Type(s)");
+
 
 	}
 

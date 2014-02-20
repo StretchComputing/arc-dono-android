@@ -78,8 +78,15 @@ public class PaymentDetail extends BaseActivity {
 
 			copyText = (TextView) findViewById(R.id.copyLabel);
 
+			baseAmountLabel.setVisibility(View.INVISIBLE);
+			baseAmountText.setVisibility(View.INVISIBLE);
 			
+			tipLabel.setVisibility(View.INVISIBLE);
+			tipText.setVisibility(View.INVISIBLE);
 			
+			checkNumberLabel.setVisibility(View.INVISIBLE);
+			checkNumberText.setVisibility(View.INVISIBLE);
+
 			
 			totalAmount.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			merchantName.setTypeface(ArcMobileApp.getLatoBoldTypeface());
@@ -116,6 +123,9 @@ public class PaymentDetail extends BaseActivity {
 			}else{
 				notesText.setText("--");
 			}
+
+			
+			setActionBarTitle("Donation");
 
 
 		} catch (NotFoundException e) {

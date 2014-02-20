@@ -109,7 +109,8 @@ public class GetPaymentHistoryTask extends AsyncTask<Void, Void, Void> {
 				myPayment.invoiceStatus = result.getString(WebKeys.STATUS);
 				myPayment.invoiceAmount = result.getDouble(WebKeys.AMOUNT);
 				myPayment.gratuityAmount = result.getDouble(WebKeys.GRATUITY);
-				myPayment.invoiceNotes = result.getString(WebKeys.NOTES);
+				//myPayment.invoiceNotes = result.getString(WebKeys.NOTES);
+				myPayment.invoiceNotes = "";
 				myPayment.invoiceDate = result.getString(WebKeys.DATE_CREATED);
 
 				
