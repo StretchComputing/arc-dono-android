@@ -1,8 +1,17 @@
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
+        android:layout_below="@id/relativeLayout1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="0dp"
+        android:background="@color/lightGray" >
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/text_enter_pin"
@@ -10,7 +19,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/button_email"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="10dp"
         android:text="@string/init_continue_string"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/black" />
@@ -18,122 +28,192 @@
     <Button
         android:id="@+id/button_email"
         style="@style/DonoBlueStyle"
-        android:layout_width="125dp"
+        android:layout_width="150dp"
         android:layout_height="39dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="0dp"
         android:layout_marginLeft="20dp"
-        android:background="@drawable/dono_button_blue"
+        android:background="@android:color/transparent"
         android:onClick="onTermsClicked"
-        android:text="@string/terms_string" />
+        android:text="@string/terms_string"
+        android:textSize="17sp" />
 
     <Button
         android:id="@+id/quickFour"
         style="@style/DonoBlueStyle"
-        android:layout_width="125dp"
+        android:layout_width="150dp"
         android:layout_height="39dp"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/text_enter_pin"
         android:layout_marginRight="20dp"
-        android:background="@drawable/dono_button_blue"
+        android:background="@android:color/transparent"
         android:onClick="onPrivacyClicked"
-        android:text="@string/privacy_string" />
-
-    <TextView
-        android:id="@+id/amountText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/merchantNameText"
-        android:layout_below="@+id/merchantNameText"
-        android:layout_marginTop="20dp"
-        android:text="@string/step_two_text"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/black" />
-
-    <TextView
-        android:id="@+id/nameText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/amountText"
-        android:layout_below="@+id/amountText"
-        android:layout_marginTop="20dp"
-        android:text="@string/step_three_text"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/black" />
-
-    <TextView
-        android:id="@+id/merchantNameText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button_email"
-        android:layout_below="@+id/p_date"
-        android:layout_marginTop="50dp"
-        android:text="@string/step_one_text"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/black" />
-
-    <Button
-        android:id="@+id/button_call"
-        style="@style/DonoGreenStyle"
-        android:layout_width="204dp"
-        android:layout_height="46dp"
-        android:layout_above="@+id/text_enter_pin"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="56dp"
-        android:background="@drawable/dono_button_green"
-        android:onClick="onStartClicked"
-        android:text="@string/start_using_string" />
-
-    <TextView
-        android:id="@+id/p_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/current_merchant"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="64dp"
-        android:text="@string/init_sub_title"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColorHint="@color/black" />
-
-    <ImageView
-        android:id="@+id/help_dollar_arrow"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="14dp"
-        android:src="@drawable/ic_launcher" />
+        android:text="@string/privacy_string"
+        android:textSize="17sp" />
 
     <TextView
         android:id="@+id/current_merchant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="25dp"
-        android:layout_toRightOf="@+id/help_dollar_arrow"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
         android:text="@string/welcome_string"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/black"
         android:textStyle="bold" />
 
-    <ImageView
-        android:id="@+id/imageView2"
+    <TextView
+        android:id="@+id/p_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/text_enter_pin"
+        android:layout_below="@+id/current_merchant"
+        android:layout_marginTop="5dp"
+        android:text="@string/init_sub_title"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColorHint="@color/black" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
         android:layout_above="@+id/text_enter_pin"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/divider" />
+        android:layout_marginBottom="0dp"
+        android:background="@color/darkGray" >
+    </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/help_dollar_arrow"
+    <Button
+        android:id="@+id/button_call"
+        style="@style/DonoGreenStyle"
+        android:layout_width="204dp"
+        android:layout_height="46dp"
+        android:layout_above="@+id/relativeLayout1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="14dp"
-        android:src="@drawable/divider" />
+        android:layout_marginBottom="25dp"
+        android:background="@drawable/dono_button_green"
+        android:onClick="onStartClicked"
+        android:text="@string/start_using_string" />
+
+    <ViewFlipper
+        android:id="@+id/viewFlipper1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_call"
+        android:layout_below="@+id/p_date"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="260dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginBottom="64dp"
+                android:src="@drawable/screenone" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="52dp"
+                android:src="@drawable/divider" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="30dp"
+                android:gravity="center_horizontal"
+                android:text="Select your location..."
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </RelativeLayout>
+        
+        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:id="@+id/imageView21"
+                android:layout_width="wrap_content"
+                android:layout_height="260dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginBottom="64dp"
+                android:src="@drawable/screentwo" />
+
+            <ImageView
+                android:id="@+id/imageView22"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="52dp"
+                android:src="@drawable/divider" />
+
+            <TextView
+                android:id="@+id/textView21"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="30dp"
+                android:gravity="center_horizontal"
+                android:text="...Enter an amount..."
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </RelativeLayout>
+        
+        
+        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:id="@+id/imageView31"
+                android:layout_width="wrap_content"
+                android:layout_height="260dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginBottom="64dp"
+                android:src="@drawable/screenthree" />
+
+            <ImageView
+                android:id="@+id/imageView32"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="52dp"
+                android:src="@drawable/divider" />
+
+            <TextView
+                android:id="@+id/textView31"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="30dp"
+                android:gravity="center_horizontal"
+                android:text="...Confirm donation!"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </RelativeLayout>
+
+    </ViewFlipper>
 
 </RelativeLayout>

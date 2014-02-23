@@ -144,6 +144,12 @@ public class Home extends BaseActivity {
 			}catch(Exception e){
 				
 			}
+			
+		
+			
+				
+				
+				
 		} catch (NotFoundException e) {
 			(new CreateClientLogTask("Home.onCreate", "Exception Caught", "error", e)).execute();
 

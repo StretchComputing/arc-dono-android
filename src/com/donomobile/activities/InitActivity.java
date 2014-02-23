@@ -6,15 +6,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.donomobile.ArcMobileApp;
 import com.donomobile.utils.ArcPreferences;
 import com.donomobile.utils.Keys;
+import com.donomobile.utils.Logger;
 import com.donomobile.web.GetTokenTask;
 import com.donomobile.web.rskybox.AppActions;
 import com.donomobile.web.rskybox.CreateClientLogTask;
@@ -36,6 +39,9 @@ public class InitActivity extends Activity {
 	private Button termsButton;
 	private Button privacyButton;
 	private boolean isLeaving = false;
+    private float initialX;
+
+	ViewFlipper flippy;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,26 +58,31 @@ public class InitActivity extends Activity {
 			subTitleText = (TextView)findViewById(R.id.p_date);
 			subTitleText.setTypeface(ArcMobileApp.getLatoLightTypeface());
 			
-			stepOne = (TextView)findViewById(R.id.merchantNameText);
-			stepOne.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+			//stepOne = (TextView)findViewById(R.id.merchantNameText);
+			//stepOne.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
-			stepTwo = (TextView)findViewById(R.id.amountText);
-			stepTwo.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+			//stepTwo = (TextView)findViewById(R.id.amountText);
+			//stepTwo.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
-			stepthree = (TextView)findViewById(R.id.nameText);
-			stepthree.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+			//stepthree = (TextView)findViewById(R.id.nameText);
+			//stepthree.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
 			termsText = (TextView)findViewById(R.id.text_enter_pin);
-			termsText.setTypeface(ArcMobileApp.getLatoLightTypeface());
+			termsText.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
 			startButton = (Button)findViewById(R.id.button_call);
 			startButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			termsButton = (Button)findViewById(R.id.button_email);
-			termsButton.setTypeface(ArcMobileApp.getLatoLightTypeface());
+			termsButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			privacyButton = (Button)findViewById(R.id.quickFour);
-			privacyButton.setTypeface(ArcMobileApp.getLatoLightTypeface());
-
+			privacyButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+			
+			flippy = (ViewFlipper) findViewById(R.id.viewFlipper1);
+			//flippy.setOnClickListener(this);
 			//Get the token
+			flippy.setInAnimation(this, android.R.anim.fade_in);
+			flippy.setOutAnimation(this, android.R.anim.fade_out);
+			
 			
 			getGuestToken();
 		} catch (Exception e) {
@@ -81,6 +92,44 @@ public class InitActivity extends Activity {
 		
 	}
 	
+	   @Override
+	    public boolean onTouchEvent(MotionEvent touchevent) {
+	        switch (touchevent.getAction()) {
+	        case MotionEvent.ACTION_DOWN:
+	            initialX = touchevent.getX();
+	            Logger.d("INITIAL X: " + initialX);
+	            break;
+	        case MotionEvent.ACTION_UP:
+	            float finalX = touchevent.getX();
+	            
+	            if (initialX == finalX){
+	            	break;
+	            }
+	
+
+	            if (initialX > finalX) {
+	                if (flippy.getDisplayedChild() == 2)
+	                    break;
+	 
+	                /*TruitonFlipper.setInAnimation(this, R.anim.in_right);
+	                TruitonFlipper.setOutAnimation(this, R.anim.out_left);*/
+	 
+	                flippy.showNext();
+	            } else {
+	                if (flippy.getDisplayedChild() == 0)
+	                    break;
+	 
+	                /*TruitonFlipper.setInAnimation(this, R.anim.in_left);
+	                TruitonFlipper.setOutAnimation(this, R.anim.out_right);*/
+	 
+	                flippy.showPrevious();
+	            }
+	            break;
+	        }
+	        return false;
+	    }
+	   
+	   
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -145,6 +194,7 @@ public class InitActivity extends Activity {
 	
 	public void onStartClicked(View view) {
 
+		
 		try {
 			//Go Home
 			

@@ -225,6 +225,8 @@ public class MenuListFragment extends ListFragment {
 			
 			Intent single = new Intent(getContext(), DefaultLocation.class);
 			single.putExtra(Constants.VENUE, merchObject);
+			single.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
 			startActivity(single);
 		}
 		private void goToProfile(){

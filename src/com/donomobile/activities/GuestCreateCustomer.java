@@ -15,6 +15,7 @@ import com.donomobile.domain.Check;
 import com.donomobile.utils.ArcPreferences;
 import com.donomobile.utils.Constants;
 import com.donomobile.utils.Keys;
+import com.donomobile.utils.MerchantObject;
 import com.donomobile.web.ErrorCodes;
 import com.donomobile.web.UpdateCustomerTask;
 import com.donomobile.web.rskybox.AppActions;
@@ -34,6 +35,8 @@ public class GuestCreateCustomer extends BaseActivity {
 	private TextView subText;
 	private boolean isCreating = false;
 
+	private MerchantObject myMerchant;
+	
 	@Override
 	public void onBackPressed() {
 	}
@@ -50,6 +53,7 @@ public class GuestCreateCustomer extends BaseActivity {
 			setContentView(R.layout.activity_guest_create_customer);
 			
 			theBill =  (Check) getIntent().getSerializableExtra(Constants.INVOICE);
+			myMerchant =  (MerchantObject) getIntent().getSerializableExtra(Constants.VENUE);
 
 			emailTextView = (TextView) findViewById (R.id.guest_email_textv);
 			emailTextView.setTypeface(ArcMobileApp.getLatoLightTypeface());
@@ -130,11 +134,25 @@ public class GuestCreateCustomer extends BaseActivity {
 				isCreating = true;
 				AppActions.add("Guest Create Customer - No Thanks Clicked");
 
-				Intent goReview = new Intent(getApplicationContext(), Review.class);
-				goReview.putExtra(Constants.INVOICE, theBill);
-				loadingDialog.dismiss();
+		 		ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
 
-				startActivity(goReview);
+				if (myPrefs.getString(Keys.DEFAULT_CHURCH_ID) != null && myPrefs.getString(Keys.DEFAULT_CHURCH_ID).length() > 0){
+					
+					//if you have a default church ID, go there
+					Intent single = new Intent(getApplicationContext(), DefaultLocation.class);
+					single.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					single.putExtra(Constants.VENUE, myMerchant);
+					single.putExtra(Constants.DID_PAY, true);
+
+					startActivity(single);
+		             
+		             
+				}else{
+					 Intent goBackHome = new Intent(getApplicationContext(), Home.class);
+		             goBackHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		             startActivity(goBackHome);
+
+				}
 			}
 			
 		} catch (Exception e) {
@@ -182,9 +200,23 @@ public class GuestCreateCustomer extends BaseActivity {
 
 							loadingDialog.dismiss();
 
-							Intent goReview = new Intent(getApplicationContext(), Review.class);
-							goReview.putExtra(Constants.INVOICE, theBill);
-							startActivity(goReview);
+
+							if (myPrefs.getString(Keys.DEFAULT_CHURCH_ID) != null && myPrefs.getString(Keys.DEFAULT_CHURCH_ID).length() > 0){
+								
+								//if you have a default church ID, go there
+								Intent single = new Intent(getApplicationContext(), DefaultLocation.class);
+								single.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+								single.putExtra(Constants.VENUE, myMerchant);
+								single.putExtra(Constants.DID_PAY, true);
+								startActivity(single);
+					             
+					             
+							}else{
+								 Intent goBackHome = new Intent(getApplicationContext(), Home.class);
+					             goBackHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					             startActivity(goBackHome);
+
+							}
 							
 							
 						}else{

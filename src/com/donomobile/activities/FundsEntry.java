@@ -51,34 +51,42 @@ public class FundsEntry extends BaseActivity {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_funds_entry);
 		
 		
-		homeTitle = (TextView) findViewById(R.id.here_title);
-		homeTitle.setTypeface(ArcMobileApp.getLatoLightTypeface());
-		
-		cardNumberText = (EditText)findViewById(R.id.editText1);
-		cardNumberText.setTypeface(ArcMobileApp.getLatoLightTypeface());
-		
-		expirationText = (EditText)findViewById(R.id.editText2);
-		expirationText.setTypeface(ArcMobileApp.getLatoLightTypeface());
-		expirationText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(5) });
+		try{
+			super.onCreate(savedInstanceState);
+			setContentView(R.layout.activity_funds_entry);
+			
+			
+			homeTitle = (TextView) findViewById(R.id.here_title);
+			homeTitle.setTypeface(ArcMobileApp.getLatoLightTypeface());
+			
+			cardNumberText = (EditText)findViewById(R.id.editText1);
+			cardNumberText.setTypeface(ArcMobileApp.getLatoLightTypeface());
+			
+			expirationText = (EditText)findViewById(R.id.editText2);
+			expirationText.setTypeface(ArcMobileApp.getLatoLightTypeface());
+			expirationText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(5) });
 
-		ccvText = (EditText)findViewById(R.id.editText3);
-		ccvText.setTypeface(ArcMobileApp.getLatoLightTypeface());
-		ccvText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(4) });
+			ccvText = (EditText)findViewById(R.id.editText3);
+			ccvText.setTypeface(ArcMobileApp.getLatoLightTypeface());
+			ccvText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(4) });
 
 
-		setActionBarTitle("Payment");
+			setActionBarTitle("Payment");
 
-		setFieldFormatters();
-		
-		myMerchant =  (MerchantObject) getIntent().getSerializableExtra(Constants.VENUE);
+			setFieldFormatters();
+			
+			myMerchant =  (MerchantObject) getIntent().getSerializableExtra(Constants.VENUE);
 
-		if (myMerchant != null){
-			isPaymentFlow = true;
+			if (myMerchant != null){
+				isPaymentFlow = true;
+			}
+		}catch(Exception e){
+			(new CreateClientLogTask("FundsEntry.onCreate", "Exception Caught", "error", e)).execute();
+
 		}
+	
 
 	}
 
@@ -185,7 +193,7 @@ public class FundsEntry extends BaseActivity {
                  	 
                  	 
              	}catch(Exception e){
-             		Logger.d("Exception " + e);
+        			(new CreateClientLogTask("FundsEntry.CardNumberText.onTextChanged", "Exception Caught", "error", e)).execute();
              	}
            	 
            	 
@@ -208,26 +216,31 @@ public class FundsEntry extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-            	
-            	if (count == 0 && start == 2){
-            		expirationText.setText(expirationText.getText().toString().substring(0, 1));
-            		expirationText.setSelection(expirationText.getText().length());
-            	}else if (s.toString().length() == 2){
-            		expirationText.setText(expirationText.getText().toString() + "/");
-            		expirationText.setSelection(expirationText.getText().length());
-            	}else if (s.toString().length() == 1){
-            	
-            		double myDouble = Double.parseDouble(s.toString());
-            		
-            		if (myDouble > 1){
-            			expirationText.setText("0" + s.toString());
+            	try{
+            		if (count == 0 && start == 2){
+                		expirationText.setText(expirationText.getText().toString().substring(0, 1));
                 		expirationText.setSelection(expirationText.getText().length());
-            		}
-            		
-            		
-            	}else if (s.toString().length() == 5){
-            		ccvText.requestFocus();
+                	}else if (s.toString().length() == 2){
+                		expirationText.setText(expirationText.getText().toString() + "/");
+                		expirationText.setSelection(expirationText.getText().length());
+                	}else if (s.toString().length() == 1){
+                	
+                		double myDouble = Double.parseDouble(s.toString());
+                		
+                		if (myDouble > 1){
+                			expirationText.setText("0" + s.toString());
+                    		expirationText.setSelection(expirationText.getText().length());
+                		}
+                		
+                		
+                	}else if (s.toString().length() == 5){
+                		ccvText.requestFocus();
+                	}
+            	}catch(Exception e){
+        			(new CreateClientLogTask("FundsEntry.ExpirationText.onTextChanged", "Exception Caught", "error", e)).execute();
+
             	}
+            
 
             }
 
@@ -643,6 +656,7 @@ public class FundsEntry extends BaseActivity {
 			}
 			
 		}catch(Exception e){
+			(new CreateClientLogTask("FundsEntry.getCardTypeFromNumber", "Exception Caught", "error", e)).execute();
 			return "UNKNOWN";
 		}
                 
@@ -676,6 +690,8 @@ public class FundsEntry extends BaseActivity {
 		    
 			return ((oddSum + evenSum) % 10 == 0);
 		}catch(Exception e){
+			(new CreateClientLogTask("FundsEntry.luhnCheck", "Exception Caught", "error", e)).execute();
+
 			return false;
 		}
 		

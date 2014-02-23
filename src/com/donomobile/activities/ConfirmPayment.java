@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.donomobile.activities.GuestCreateCustomer;
 import com.donomobile.ArcMobileApp;
 import com.donomobile.BaseActivity;
 import com.donomobile.db.controllers.DBController;
@@ -392,9 +393,25 @@ public class ConfirmPayment extends BaseActivity {
 								
 								AppActions.add("Confirm Payment - Payment Successful as Guest");
 
-								loadingDialog.dismiss();
+								if (justAddedCard){
+									//Offer saving the card;
+
+									myPaymentId = getPaymentId();
+									showPinDialog();
+								}else{
+									
+									loadingDialog.dismiss();
+
+									
+									goNextScreen();
+
+									
+								}
 								
-								goNextScreen();
+								
+								
+
+								
 								
 							}else{
 								
@@ -1059,21 +1076,50 @@ public class ConfirmPayment extends BaseActivity {
 
  	public void goNextScreen(){
  		
- 		 ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
+ 		for (int i = 0; i < myMerchant.donationTypes.size(); i ++){
+ 			
+ 			DonationTypeObject tmp = myMerchant.donationTypes.get(i);
+ 			if (tmp.isProcessingFee){
+ 				myMerchant.donationTypes.remove(tmp);
+ 				break;
+ 			}
+ 		}
+ 		
+ 		ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
 
-			if (myPrefs.getString(Keys.DEFAULT_CHURCH_ID) != null && myPrefs.getString(Keys.DEFAULT_CHURCH_ID).length() > 0){
+			String customerToken = myPrefs.getString(Keys.CUSTOMER_TOKEN);
+
+			if(customerToken == null && customerToken == null){
+				//
 				
-				//if you have a default church ID, go there
+				Intent goReview = new Intent(getApplicationContext(), GuestCreateCustomer.class);
+				goReview.putExtra(Constants.VENUE, myMerchant);
+				startActivity(goReview);
+				
 			}else{
+				if (myPrefs.getString(Keys.DEFAULT_CHURCH_ID) != null && myPrefs.getString(Keys.DEFAULT_CHURCH_ID).length() > 0){
+					
+					//if you have a default church ID, go there
+					Intent single = new Intent(getApplicationContext(), DefaultLocation.class);
+					single.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					single.putExtra(Constants.VENUE, myMerchant);
+					single.putExtra(Constants.DID_PAY, true);
+					startActivity(single);
+		             
+		             
+				}else{
+					 Intent goBackHome = new Intent(getApplicationContext(), Home.class);
+		             goBackHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		             startActivity(goBackHome);
 
-
+				}
 			}
 			
 			
-			 Intent goBackHome = new Intent(getApplicationContext(), Home.class);
-             goBackHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-             startActivity(goBackHome);
 			
+			
+			
+		
 		
 			
 			

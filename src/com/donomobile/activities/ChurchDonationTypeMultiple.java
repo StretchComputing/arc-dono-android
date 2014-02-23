@@ -7,6 +7,7 @@ import io.card.payment.CreditCard;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,6 +45,7 @@ import com.donomobile.web.rskybox.AppActions;
 import com.donomobile.web.rskybox.CreateClientLogTask;
 import com.donomobileapp.R;
 
+@SuppressLint("NewApi")
 public class ChurchDonationTypeMultiple extends BaseActivity {
 
 	private MerchantObject myMerchant;
@@ -66,6 +68,7 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
     private TextView muchDonateTop;
 
     private Boolean isGoingConfirm = false;
+    
     
     
     public double myQuickOne;
@@ -201,6 +204,7 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
 
 	}
 	
+	@SuppressWarnings("deprecation")
 	public RelativeLayout createDonation(int index) {
 		
 		try {
@@ -210,9 +214,20 @@ public class ChurchDonationTypeMultiple extends BaseActivity {
 			 
 
 			Display display = getWindowManager().getDefaultDisplay();
-			Point size = new Point();
-			display.getSize(size);
-			screenwidth = size.x;
+			
+			int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+			if (currentapiVersion >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2){
+
+				Point size = new Point();
+				display.getSize(size);
+				screenwidth = size.x;
+				
+			} else{
+				screenwidth = display.getWidth();
+			}
+			
+			
+		
 			
 			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(screenwidth, RelativeLayout.LayoutParams.WRAP_CONTENT);
 			rLayout.setLayoutParams(params);			

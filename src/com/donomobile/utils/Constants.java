@@ -9,6 +9,7 @@ public final class Constants {
 	public static final String TRACKER_TAG = "GoogleAnayticsTracker";
 		
 	public static final String IS_INIT = "IS_INIT";
+	public static final String DID_PAY = "DID_PAY";
 
 	
 	public static final String VENUE = "VENUE";
