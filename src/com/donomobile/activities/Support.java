@@ -31,6 +31,8 @@ public class Support extends BaseActivity {
 	private CheckBox donationOptionsCheckBox;
 	private CheckBox defaultChurchCheckBox;
 	
+	private TextView versionText;
+	
 	private Button emailButton;
 	private Button phoneButton;
 	@Override
@@ -143,7 +145,11 @@ public class Support extends BaseActivity {
 			
 			setActionBarTitle("Settings");
 
-			
+			versionText = (TextView) findViewById(R.id.textView1);
+			String version = "version: " + ArcMobileApp.getVersion();
+			versionText.setText(version);
+			versionText.setTypeface(ArcMobileApp.getLatoLightTypeface());
+
 		} catch (Exception e) {
 			(new CreateClientLogTask("Support.onCreate", "Exception Caught", "error", e)).execute();
 

@@ -101,14 +101,15 @@
         android:id="@+id/viewFlipper1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button_call"
+        android:layout_above="@id/button_call"
         android:layout_below="@+id/p_date"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="0dp" >
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent"
+            android:layout_marginBottom="50dp" >
 
             <ImageView
                 android:id="@+id/imageView1"
@@ -141,10 +142,10 @@
 
         </RelativeLayout>
         
-        
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent"
+            android:layout_marginBottom="50dp" >
 
             <ImageView
                 android:id="@+id/imageView21"
@@ -177,11 +178,10 @@
 
         </RelativeLayout>
         
-        
-        
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent"
+            android:layout_marginBottom="50dp" >
 
             <ImageView
                 android:id="@+id/imageView31"

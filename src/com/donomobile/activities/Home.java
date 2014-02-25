@@ -39,8 +39,8 @@ import com.donomobile.ArcMobileApp;
 import com.donomobile.BaseActivity;
 import com.donomobile.utils.ArcPreferences;
 import com.donomobile.utils.Constants;
+import com.donomobile.utils.DataSingleton;
 import com.donomobile.utils.Keys;
-import com.donomobile.utils.Logger;
 import com.donomobile.utils.MerchantObject;
 import com.donomobile.web.ErrorCodes;
 import com.donomobile.web.GetMerchantsTask;
@@ -146,6 +146,26 @@ public class Home extends BaseActivity {
 			}
 			
 		
+			DataSingleton single = DataSingleton.getInstance();
+			
+			if (single.merchantsArray.size() > 0){
+				
+				merchants = new ArrayList<MerchantObject>(single.merchantsArray);
+				
+				populateListView();
+				registerClickCallback();
+				
+			}else{
+				
+				loadingDialog = new ProgressDialog(Home.this);
+				loadingDialog.setTitle("Finding Nearby Locations");
+				loadingDialog.setMessage("Please Wait...");
+				loadingDialog.setCancelable(false);
+				loadingDialog.show();
+				
+				
+				getMerchantsFromWeb();
+			}
 			
 				
 				
@@ -159,6 +179,16 @@ public class Home extends BaseActivity {
 	}
 	
 
+	@Override
+	public void onBackPressed() {
+		
+		DataSingleton single = DataSingleton.getInstance();
+		single.merchantsArray = new ArrayList<MerchantObject>();
+		
+		super.onBackPressed();
+	}
+	
+	
 	
 	protected void getMerchantsFromWeb() {
 		try {
@@ -179,6 +209,9 @@ public class Home extends BaseActivity {
 						loadingDialog.hide();
 						if (merchants != null && merchants.size() > 0){
 						
+							
+							DataSingleton singleton = DataSingleton.getInstance();
+							singleton.merchantsArray = new ArrayList<MerchantObject>(merchants);
 							
 							ArcMobileApp.setAllMerchants(merchants);
 							
@@ -270,22 +303,11 @@ public class Home extends BaseActivity {
 	protected void onResume() {
 		super.onResume();
 		//getTokensFromWeb();
-		isGoingRestaurant = false;
-		
-
+		isGoingRestaurant = false;		
 		
 		
-		if (merchants == null || merchants.size() == 0){
-			
-			loadingDialog = new ProgressDialog(Home.this);
-			loadingDialog.setTitle("Finding Nearby Locations");
-			loadingDialog.setMessage("Please Wait...");
-			loadingDialog.setCancelable(false);
-			loadingDialog.show();
-			
-			
-			getMerchantsFromWeb();
-		}
+	
+		
 		
 	}
 
@@ -494,7 +516,9 @@ public class Home extends BaseActivity {
 
 						AppActions.add("Home -  Item Clicked - Index:" + position + ", Merchant Name:" + name);
 
-						loadingDialog.dismiss();
+						if (loadingDialog != null){
+							loadingDialog.dismiss();
+						}
 
 						
 						MerchantObject myMerchant = merchants.get(position);
