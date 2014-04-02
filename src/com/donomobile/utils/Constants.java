@@ -11,6 +11,8 @@ public final class Constants {
 	public static final String IS_INIT = "IS_INIT";
 	public static final String DID_PAY = "DID_PAY";
 
+	public static final String IS_PAYMENT_FLOW = "IS_PAYMENT_FLOW";
+
 	
 	public static final String VENUE = "VENUE";
 	public static final String VENUE_ID = "VENUE_ID";

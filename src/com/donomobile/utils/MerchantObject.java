@@ -11,6 +11,9 @@ public class MerchantObject implements Serializable {
 	public String merchantName;
 	public String merchantId;
 	public String merchantAddress;
+	public String merchantCity;
+	public String merchantState;
+
 	public ArrayList<DonationTypeObject> donationTypes;
 	public double donationAmount;
 	public String invoiceId;
@@ -29,6 +32,9 @@ public class MerchantObject implements Serializable {
 		merchantName = "";
 		merchantId = "";
 		merchantAddress = "";
+		merchantCity = "";
+		merchantState = "";
+
 		donationTypes = new ArrayList<DonationTypeObject>();
 		donationAmount = 0.0;
 		invoiceId = "";
@@ -41,6 +47,8 @@ public class MerchantObject implements Serializable {
 		chargeFee = false;
 		convenienceFee = 0.0;
 		convenienceFeeCap = 0.0;
+		
+		
 
 	}
 

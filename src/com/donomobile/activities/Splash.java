@@ -1,5 +1,8 @@
 package com.donomobile.activities;
 
+
+import java.util.TimerTask;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources.NotFoundException;
@@ -19,11 +22,15 @@ import com.donomobileapp.R;
 
 public class Splash extends Activity {
 	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		try {
+
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.splash);
+			    
+
 			
 			final ImageView logo = (ImageView) findViewById(R.id.logo);
 			logo.setAnimation(AnimationUtils.loadAnimation(this, R.anim.logo_animation));
@@ -78,10 +85,18 @@ public class Splash extends Activity {
 					}
 				}
 			});
+			
+			
 		} catch (NotFoundException e) {
 			(new CreateClientLogTask("Splash.onCreate", "Exception Caught", "error", e)).execute();
 
 		}
 	}
 
+	
+	
+	
 }
+
+
+

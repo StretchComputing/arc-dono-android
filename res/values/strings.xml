@@ -66,7 +66,7 @@
     <string name="init_sub_title">Make a donation in 3 easy steps:</string>
     <string name="title_activity_support">Support</string>
     <string name="support_title">dono support</string>
-    <string name="support_subtitle">Questions or Feedback?  Send us an email or give us a call:</string>
+    <string name="support_subtitle">Questions or Feedback?</string>
     <string name="send_email_button">Send Email</string>
     <string name="dutch_email">support@arcmobile.co</string>
     <string name="call_string">Call Now</string>
@@ -90,7 +90,7 @@
     <string name="register_title_string">Enter your email and create a password</string>
     <string name="title_activity_guest_create_customer">GuestCreateCustomer</string>
     <string name="guest_create_string">Would you like to create an account?</string>
-    <string name="guest_create_explain">If you create an account, we can send you email receipts of your transactions!</string>
+    <string name="guest_create_explain">Dono will use your email only to send you receipts.  Your email address will never be shared for any reason.  If you choose to remain a guest, all of your donations will be made anonymously.</string>
     <string name="create_string">Create</string>
     <string name="nothanks_string">No Thanks</string>
     <string name="no_payments_string">No donations have been made on this invoice.</string>
@@ -154,5 +154,9 @@
     <string name="expiration_placeholder">Exp. (mm/yy)</string>
     <string name="ccv_placeholder">CCV</string>
     <string name="scan_card_string">Scan Card</string>
+    <string name="sign_up_string">Sign Up</string>
+    <string name="rate_string">Enjoy dono?  Rate us!</string>
+    <string name="rate_button">Rate dono!</string>
+    <string name="confirm_signup_string">All donations made as a guest will be made anonymously.  Click here to sign up now!</string>
 
 </resources>

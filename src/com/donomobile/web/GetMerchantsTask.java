@@ -22,13 +22,16 @@ public class GetMerchantsTask extends AsyncTask<Void, Void, Void> {
 	private Context mContext;
 	private ArrayList<MerchantObject> mMerchantList;
 	private int mErrorCode;
-	
-	public GetMerchantsTask(Context context) {
+	private String mToken;
+
+	public GetMerchantsTask(Context context, String token) {
 		super();
 		mResponse = null;
 		mSuccess = false;
 		mContext = context;
 		mErrorCode = 0;
+		mToken = token;
+
 	}
 	
 	@Override
@@ -45,7 +48,7 @@ public class GetMerchantsTask extends AsyncTask<Void, Void, Void> {
 	
 	protected void performTask() {
 		WebServices webService = new WebServices(new ArcPreferences(mContext).getServer());
-		mResponse = webService.getMerchants();
+		mResponse = webService.getMerchants(mToken);
 	}
 	
 	protected void performPostExec() {
@@ -136,6 +139,9 @@ public class GetMerchantsTask extends AsyncTask<Void, Void, Void> {
 				
 				try{
 					myMerchant.merchantAddress = street;
+					myMerchant.merchantCity = city;
+					myMerchant.merchantState = state;
+
 				}catch(Exception e){
 					
 				}

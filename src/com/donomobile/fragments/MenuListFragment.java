@@ -46,10 +46,10 @@ public class MenuListFragment extends ListFragment {
 			super.onActivityCreated(savedInstanceState);
 			adapter = new MenuAdapter(getActivity());
 			adapter.add(new MenuItem(Utils.convertModernPicType(ModernPicTypes.World), "Home"));
+			adapter.add(new MenuItem(Utils.convertModernPicType(ModernPicTypes.Question), "All Locations"));
 			adapter.add(new MenuItem(Utils.convertModernPicType(ModernPicTypes.Guy), "My Profile"));
 			adapter.add(new MenuItem(Utils.convertModernPicType(ModernPicTypes.Dollar), "Payment"));
-			adapter.add(new MenuItem(Utils.convertModernPicType(ModernPicTypes.Question), "Settings"));
-			adapter.add(new MenuItem(Utils.convertModernPicType(ModernPicTypes.Question), "All Locations"));
+			adapter.add(new MenuItem(Utils.convertModernPicType(ModernPicTypes.Question), "Help"));
 
 			//adapter.add(new MenuItem(Utils.convertModernPicType(ModernPicTypes.Girl), "Social"));
 			setListAdapter(adapter);
@@ -138,20 +138,20 @@ public class MenuListFragment extends ListFragment {
 		private void onMenuTouch(int position) {
 			try {
 				switch(position) {
-				case 1:
+				case 2:
 					goToProfile();	
 					break;
 				case 0:
 					goDefault();
 					break;
-				case 2:
+				case 3:
 					goToFunds();				
 					break;
-				case 3:
+				case 4:
 					//showInfoDialog();
 					goAboutScreen();
 					break;
-				case 4:
+				case 1:
 					goHome();
 					break;
 				}

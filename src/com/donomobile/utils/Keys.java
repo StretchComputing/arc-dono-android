@@ -4,6 +4,10 @@ public final class Keys {
 	
 	public static final String AGREED_TERMS = "AGREED_TERMS";
 
+	public static final String IS_PAYMENT_FLOW = "IS_PAYMENT_FLOW";
+
+	
+	
 	public static final String GUEST_ID = "GUEST_ID";
 	public static final String GUEST_TOKEN = "GUEST_TOKEN";
 	
@@ -27,5 +31,6 @@ public final class Keys {
 	
 	public static final String DEFAULT_CHURCH_ID = "DEFAULT_CHURCH_ID";
 	public static final String SKIP_DONATIONS_OPTIONS = "SKIP_DONATIONS_OPTIONS";
+	public static final String DID_SHOW_ARE_YOU_SURE_GUEST = "DID_SHOW_ARE_YOU_SURE_GUEST";
 
 }

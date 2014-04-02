@@ -8,15 +8,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.donomobile.ArcMobileApp;
 import com.donomobile.BaseActivity;
+import com.donomobile.domain.Cards;
 import com.donomobile.utils.ArcPreferences;
 import com.donomobile.utils.Constants;
 import com.donomobile.utils.Keys;
+import com.donomobile.utils.MerchantObject;
 import com.donomobile.web.GetTokenTask;
 import com.donomobile.web.rskybox.AppActions;
 import com.donomobile.web.rskybox.CreateClientLogTask;
@@ -37,7 +38,12 @@ public class UserProfile extends BaseActivity {
 	private TextView helpItemText;
 	private boolean isLeaving = false;
 	private boolean isSignout = false;
-
+	private boolean isPaymentFlow = false;
+	private MerchantObject myMerchant;
+    private Cards selectedCard;
+	private boolean justAddedCard;
+	
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		try {
@@ -68,9 +74,12 @@ public class UserProfile extends BaseActivity {
 		//	createButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 
 			
+			isPaymentFlow = getIntent().getBooleanExtra(Constants.IS_PAYMENT_FLOW, false);
 
 			
-			
+			myMerchant =  (MerchantObject) getIntent().getSerializableExtra(Constants.VENUE);
+			selectedCard =  (Cards) getIntent().getSerializableExtra(Constants.SELECTED_CARD);
+			justAddedCard = getIntent().getBooleanExtra(Constants.JUST_ADD_CARD, false);
 			
 		} catch (Exception e) {
 			(new CreateClientLogTask("UserProfile.onCreate", "Exception Caught", "error", e)).execute();
@@ -149,6 +158,11 @@ public class UserProfile extends BaseActivity {
 			if (!isLeaving){
 				isLeaving = true;
 				Intent social = (new Intent(getApplicationContext(), UserLogin.class));
+				social.putExtra(Keys.IS_PAYMENT_FLOW, isPaymentFlow);
+				social.putExtra(Constants.SELECTED_CARD, selectedCard);
+				social.putExtra(Constants.VENUE, myMerchant);				
+				social.putExtra(Constants.JUST_ADD_CARD, justAddedCard);
+		 		
 				startActivity(social);
 			}
 		} catch (Exception e) {
@@ -169,6 +183,11 @@ public class UserProfile extends BaseActivity {
 			if (!isLeaving){
 				isLeaving = true;
 				Intent social = (new Intent(getApplicationContext(), UserCreateNew.class));
+				social.putExtra(Keys.IS_PAYMENT_FLOW, isPaymentFlow);
+				social.putExtra(Constants.SELECTED_CARD, selectedCard);
+				social.putExtra(Constants.VENUE, myMerchant);				
+		 		social.putExtra(Constants.JUST_ADD_CARD, justAddedCard);
+		 		
 				startActivity(social);
 			}
 		} catch (Exception e) {

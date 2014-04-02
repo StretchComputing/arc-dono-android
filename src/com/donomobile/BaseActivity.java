@@ -80,6 +80,8 @@ public class BaseActivity extends SlidingFragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		try {
+			
+
 			super.onCreate(savedInstanceState);
 			
 	        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
@@ -113,6 +115,7 @@ public class BaseActivity extends SlidingFragmentActivity {
 			initActionBar();
 			initContentProvider();
 
+			Logger.d("*******SETTING PREFS IN ON CREATE");
 			myPrefs = new ArcPreferences(getApplicationContext());
 			// theView = (LinearLayout) findViewById(R.id.login_layout);
 			// theView.setAnimation(AnimationUtils.loadAnimation(this,
@@ -252,6 +255,7 @@ public class BaseActivity extends SlidingFragmentActivity {
 	
 	public String getId() {
 		
+
 		try{
 			if (getString(Keys.CUSTOMER_ID) != null && getString(Keys.CUSTOMER_ID).length() > 0){
 				return getString(Keys.CUSTOMER_ID);
@@ -267,24 +271,35 @@ public class BaseActivity extends SlidingFragmentActivity {
 	}	
 
 	public boolean hasKey(String key) {
+	
+		
 		return myPrefs.hasKey(key);
 	}
 
 	public String getString(String key) {
+		
+		
 		return myPrefs.getString(key);
 	}
 
 	public void putString(String key, String value) {
+	
+		
 		myPrefs.putAndCommitString(key, value);
 	}
 
 	public Boolean getBoolean(String key) {
+		
+		
 		if (!hasKey(key))
 			return null;
 		return myPrefs.getBoolean(key);
 	}
 
 	public void putBoolean(String key, boolean value) {
+		
+		
+		
 		myPrefs.putAndCommitBoolean(key, value);
 	}
 

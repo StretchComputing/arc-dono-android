@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,7 +26,6 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.donomobile.activities.GuestCreateCustomer;
 import com.donomobile.ArcMobileApp;
 import com.donomobile.BaseActivity;
 import com.donomobile.db.controllers.DBController;
@@ -46,13 +46,16 @@ import com.donomobileapp.R;
 
 public class ConfirmPayment extends BaseActivity {
 
+	private MerchantObject myMerchant;
     private Cards selectedCard;
+	private boolean justAddedCard;
+
+	private EditText notesText;
 	private ListView typesListView;
 
     private TextView myTotalPayment;
     private TextView myPaymentUsed;
 	private ProgressDialog loadingDialog;
-	private boolean justAddedCard;
     private String decryptedCC;
     private AlertDialog pinDialog;
 	private String myPIN;
@@ -63,9 +66,10 @@ public class ConfirmPayment extends BaseActivity {
 	private TextView totalLabel;
 	
 	private Button confirmButton;
+	private Button signUpButton;
+
 	private boolean isConfirmingPayment = false;
 	
-	private MerchantObject myMerchant;
 	private TextView titleTextOne;
 	private TextView titleTextTwo;
 	private Boolean shouldChargeFee;
@@ -95,7 +99,11 @@ public class ConfirmPayment extends BaseActivity {
 			typesListView = (ListView) findViewById(R.id.listView1);
 			
 	
-
+			
+			
+			notesText = (EditText) findViewById(R.id.editText1);
+			notesText.setTypeface(ArcMobileApp.getLatoLightTypeface());
+			notesText.setHint("Payment Notes:");
 			
 			//titleText = (TextView) findViewById(R.id.text_enter_pin);
 			//titleText.setTypeface(ArcMobileApp.getLatoLightTypeface());
@@ -107,8 +115,10 @@ public class ConfirmPayment extends BaseActivity {
 			totalLabel.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
 			confirmButton = (Button) findViewById(R.id.button_email);
-			confirmButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+			//confirmButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
+			signUpButton = (Button) findViewById(R.id.button1);
+			signUpButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
 			titleTextOne = (TextView) findViewById(R.id.titleTextOne);
 			titleTextOne.setTypeface(ArcMobileApp.getLatoLightTypeface());
@@ -119,7 +129,7 @@ public class ConfirmPayment extends BaseActivity {
 			
 			selectedPaying = new ArrayList<DonationTypeObject>();
 			
-		
+			
 			//.setVisibility(View.INVISIBLE);
 
 			//button01 = (Button) findViewById(R.id.button1);
@@ -136,14 +146,30 @@ public class ConfirmPayment extends BaseActivity {
 			if (myMerchant.chargeFee){
 				
 				if (myMerchant.donationAmount < myMerchant.convenienceFeeCap){
-					shouldChargeFee = true;
 					
-					DonationTypeObject tmp = new DonationTypeObject();
-					tmp.isProcessingFee = true;
-					tmp.amountPaying = myMerchant.convenienceFee;
-					tmp.percentPaying = 1.0;
+					boolean found = false;
+					for (int i = 0; i < myMerchant.donationTypes.size(); i++){
+						DonationTypeObject typeObject = myMerchant.donationTypes.get(i);
+						if (typeObject.isProcessingFee){
+							found = true;
+							break;
+						}
+						
+					}
 					
-					myMerchant.donationTypes.add(tmp);
+						shouldChargeFee = true;
+						
+						if (!found){
+
+							DonationTypeObject tmp = new DonationTypeObject();
+							tmp.isProcessingFee = true;
+							tmp.amountPaying = myMerchant.convenienceFee;
+							tmp.percentPaying = 1.0;
+						
+							myMerchant.donationTypes.add(tmp);
+						}
+					
+					
 				}
 			}
 			
@@ -167,17 +193,18 @@ public class ConfirmPayment extends BaseActivity {
 			anonymousCheckBox = (CheckBox) findViewById(R.id.anonymousCheck);
 			anonymousCheckBox.setTypeface(ArcMobileApp.getLatoLightTypeface());
 			
-			defaultLocationCheckBox = (CheckBox) findViewById(R.id.defaultCheck);
-			defaultLocationCheckBox.setTypeface(ArcMobileApp.getLatoLightTypeface());
+			//defaultLocationCheckBox = (CheckBox) findViewById(R.id.defaultCheck);
+			//defaultLocationCheckBox.setTypeface(ArcMobileApp.getLatoLightTypeface());
 			
-			
+			//defaultLocationCheckBox.setVisibility(View.INVISIBLE);
+
 			
             ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
 
 			if (myPrefs.getString(Keys.DEFAULT_CHURCH_ID) != null && myPrefs.getString(Keys.DEFAULT_CHURCH_ID).length() > 0){
-				defaultLocationCheckBox.setChecked(false);
+				//defaultLocationCheckBox.setChecked(false);
 			}else{
-				defaultLocationCheckBox.setChecked(true);
+				//				defaultLocationCheckBox.setChecked(true);
 
 			}
 			
@@ -188,14 +215,42 @@ public class ConfirmPayment extends BaseActivity {
 				//guest, hide the anonymouscheckbox
 				anonymousCheckBox.setVisibility(View.INVISIBLE);
 				
+				confirmButton.setText("Donate Anonymously");
+				signUpButton.setVisibility(View.VISIBLE);
 			}else{
 				anonymousCheckBox.setVisibility(View.VISIBLE);
+				
+				confirmButton.setText("Confirm Donation");
+				signUpButton.setVisibility(View.GONE);
 
+				
 			}
 			
 			
 			setActionBarTitle("Confirm Donation");
 
+			
+			final View activityRootView = findViewById(R.id.activityRoot);
+			activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+			    @Override
+			    public void onGlobalLayout() {
+			        int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+			        if (heightDiff > 300) { // if more than 100 pixels, its probably a keyboard...
+			            
+			        	myTotalPayment.setVisibility(View.INVISIBLE);
+						totalLabel.setVisibility(View.INVISIBLE);
+						typesListView.setVisibility(View.INVISIBLE);
+						
+						
+			        }else{
+			        	myTotalPayment.setVisibility(View.VISIBLE);
+						totalLabel.setVisibility(View.VISIBLE);
+						typesListView.setVisibility(View.VISIBLE);
+			        }
+			     }
+			});
+			
+			
 			
 		} catch (Exception e) {
 			(new CreateClientLogTask("ConfirmPayment.onCreate", "Exception Caught", "error", e)).execute();
@@ -212,6 +267,27 @@ public class ConfirmPayment extends BaseActivity {
 		loadingDialog.setTitle("Making Payment");
 		loadingDialog.setMessage("Please Wait...");
 		loadingDialog.setCancelable(false);
+		
+        ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
+
+		String customerToken = myPrefs.getString(Keys.CUSTOMER_TOKEN);
+
+		if(customerToken == null || customerToken.length() == 0){
+			//guest, hide the anonymouscheckbox
+			anonymousCheckBox.setVisibility(View.INVISIBLE);
+			
+			confirmButton.setText("Donate Anonymously");
+			signUpButton.setVisibility(View.VISIBLE);
+		}else{
+			anonymousCheckBox.setVisibility(View.VISIBLE);
+			
+			confirmButton.setText("Confirm Donation");
+			signUpButton.setVisibility(View.GONE);
+
+			
+		}
+		
+		
 	}
 	
 	
@@ -243,12 +319,12 @@ public class ConfirmPayment extends BaseActivity {
 			
 			if (!isConfirmingPayment){
 				
-				
+				/*
 				if (defaultLocationCheckBox.isChecked()){
                     ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
                     myPrefs.putAndCommitString(Keys.DEFAULT_CHURCH_ID, myMerchant.merchantId);
 				}
-				
+				*/
 				
 				
 				isConfirmingPayment = true;
@@ -346,6 +422,7 @@ public class ConfirmPayment extends BaseActivity {
 			String cardType = getCardTypeForNumber(account);
 			
 			
+			String notes = notesText.getText().toString();
 			
 			
 			String splitType = PaymentFlags.SplitType.DOLLAR.toString();
@@ -364,7 +441,7 @@ public class ConfirmPayment extends BaseActivity {
 			if (anonymousCheckBox.isChecked()){
 				isAnonymous = true;
 			}
-			CreatePayment newPayment = new CreatePayment(myMerchant.merchantId, customerId, myMerchant.invoiceId, grandTotal, grandTotal, gratuity, account, type, cardType, expiration, pin, null, splitType, null, null, myMerchant.donationTypes, isAnonymous);
+			CreatePayment newPayment = new CreatePayment(notes, myMerchant.merchantId, customerId, myMerchant.invoiceId, grandTotal, grandTotal, gratuity, account, type, cardType, expiration, pin, null, splitType, null, null, myMerchant.donationTypes, isAnonymous);
 
 			MakePaymentTask task = new MakePaymentTask(token, newPayment, getApplicationContext()) {
 				@Override
@@ -1126,5 +1203,19 @@ public class ConfirmPayment extends BaseActivity {
 			
  	}
 
+ 	
+ 	public void goSignupNow(View view) {
+
+ 		Intent profile = new Intent(getApplicationContext(), UserProfile.class);
+ 		profile.putExtra(Constants.IS_PAYMENT_FLOW, true);
+ 		profile.putExtra(Constants.SELECTED_CARD, selectedCard);
+ 		profile.putExtra(Constants.VENUE, myMerchant);				
+ 		profile.putExtra(Constants.JUST_ADD_CARD, justAddedCard);
+		
+        startActivity(profile);
+		
+	}
+ 	
+ 	
     
 }

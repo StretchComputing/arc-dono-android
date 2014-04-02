@@ -43,28 +43,6 @@
         android:text="@string/dutch_email"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <Button
-        android:id="@+id/button_call"
-        style="@style/DonoOrangeStyle"
-        android:layout_width="150dp"
-        android:layout_height="46dp"
-        android:layout_below="@+id/merchantNameText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="36dp"
-        android:background="@drawable/dono_button_orange"
-        android:onClick="callNow"
-        android:text="@string/call_string" />
-
-    <TextView
-        android:id="@+id/dateText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/button_call"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:text="@string/dutch_phone"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
     <CheckBox
         android:id="@+id/anonymousCheck"
         android:layout_width="wrap_content"
@@ -93,5 +71,29 @@
         android:layout_centerHorizontal="true"
         android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/merchantNameText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="51dp"
+        android:gravity="center_horizontal"
+        android:text="@string/rate_string"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/black" />
+
+    <Button
+        android:id="@+id/Button02"
+        style="@style/DonoOrangeStyle"
+        android:layout_width="150dp"
+        android:layout_height="46dp"
+        android:layout_below="@+id/TextView01"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/dono_button_orange"
+        android:onClick="rateNow"
+        android:text="@string/rate_button" />
 
 </RelativeLayout>

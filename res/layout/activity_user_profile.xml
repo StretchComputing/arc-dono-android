@@ -57,20 +57,6 @@
             android:onClick="onEditServerClicked"
             android:text="@string/edit_server_string" />
 
-        <Button
-            android:id="@+id/quickFour"
-            style="@style/DonoOrangeStyle"
-            android:layout_width="220dp"
-            android:layout_height="46dp"
-            android:layout_below="@+id/password_text"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="100dp"
-            android:background="@drawable/dono_button_orange"
-            android:onClick="onViewPaymentHistoryClicked"
-            android:text="@string/view_don_history"
-            android:textColor="@color/donoorange"
-            android:textColorHint="@color/darkGray" />
-
     </RelativeLayout>
 
     <RelativeLayout
@@ -116,5 +102,18 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/quickFour"
+        style="@style/DonoOrangeStyle"
+        android:layout_width="220dp"
+        android:layout_height="46dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="250dp"
+        android:background="@drawable/dono_button_orange"
+        android:onClick="onViewPaymentHistoryClicked"
+        android:text="@string/view_don_history"
+        android:textColor="@color/donoorange"
+        android:textColorHint="@color/darkGray" />
 
 </RelativeLayout>

@@ -41,6 +41,7 @@ import com.donomobile.utils.ArcPreferences;
 import com.donomobile.utils.Constants;
 import com.donomobile.utils.DataSingleton;
 import com.donomobile.utils.Keys;
+import com.donomobile.utils.Logger;
 import com.donomobile.utils.MerchantObject;
 import com.donomobile.web.ErrorCodes;
 import com.donomobile.web.GetMerchantsTask;
@@ -79,6 +80,8 @@ public class Home extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		try {
 			
+			super.onCreate(savedInstanceState);
+			setContentView(R.layout.home);
 			
 	       // imageLoader=new ImageLoader(getApplicationContext());
 
@@ -95,8 +98,7 @@ public class Home extends BaseActivity {
 
 			}
 			
-			super.onCreate(savedInstanceState);
-			setContentView(R.layout.home);
+			
 			
 			theView = (RelativeLayout) findViewById(R.id.home_layout);
 			mCarouselContainer = (LinearLayout) findViewById(R.id.carousel);
@@ -189,10 +191,14 @@ public class Home extends BaseActivity {
 	}
 	
 	
+
 	
 	protected void getMerchantsFromWeb() {
 		try {
-			GetMerchantsTask getMerchantsTask = new GetMerchantsTask(getApplicationContext()) {
+			
+			String myToken = getToken();
+
+			GetMerchantsTask getMerchantsTask = new GetMerchantsTask(getApplicationContext(), myToken) {
 
 				@Override
 				protected void onPostExecute(Void result) {
@@ -551,10 +557,8 @@ public class Home extends BaseActivity {
 
 					}
 					
-				
 				}
 			});
-			
 		
 		} catch (Exception e) {
 
@@ -592,10 +596,9 @@ public class Home extends BaseActivity {
 		
 			TextView address = (TextView) itemView.findViewById(R.id.p_date);
 			address.setTypeface(ArcMobileApp.getLatoLightTypeface());
-			address.setText(currentItem.merchantAddress);
+			address.setText(currentItem.merchantAddress + "  -  " + currentItem.merchantCity + "," + currentItem.merchantState);
 
 			//Logger.d("Current Id: " + currentItem.merchantId);
-			
 			ImageView image = (ImageView) itemView.findViewById(R.id.imageView1);
 			
 			if (currentItem.merchantId.equalsIgnoreCase("16")){

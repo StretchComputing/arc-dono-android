@@ -1,5 +1,6 @@
 package com.donomobile.activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,7 +25,8 @@ public class Support extends BaseActivity {
 
 	
 	private TextView questionTextView;
-	
+	private TextView rateTextView;
+
 	private TextView emailTextView;
 	private TextView phoneTextView;
 	
@@ -47,16 +49,19 @@ public class Support extends BaseActivity {
 			questionTextView = (TextView) findViewById(R.id.current_merchant);
 			questionTextView.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
+			rateTextView = (TextView) findViewById(R.id.TextView01);
+			rateTextView.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+			
+			
 			emailTextView = (TextView) findViewById(R.id.merchantNameText);
 			emailTextView.setTypeface(ArcMobileApp.getLatoLightTypeface());
 			
-			phoneTextView = (TextView) findViewById(R.id.dateText);
-			phoneTextView.setTypeface(ArcMobileApp.getLatoLightTypeface());
+		
 			
 			emailButton = (Button) findViewById(R.id.button_email);
 			emailButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
-			phoneButton = (Button) findViewById(R.id.button_call);
+			phoneButton = (Button) findViewById(R.id.Button02);
 			phoneButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
 			//donationOptionsCheckBox = (CheckBox) findViewById(R.id.defaultCheck);
@@ -143,7 +148,7 @@ public class Support extends BaseActivity {
 		        }
 		    });
 			
-			setActionBarTitle("Settings");
+			setActionBarTitle("Help");
 
 			versionText = (TextView) findViewById(R.id.textView1);
 			String version = "version: " + ArcMobileApp.getVersion();
@@ -185,21 +190,26 @@ public class Support extends BaseActivity {
 		}
 	}
 	
-	public void callNow(View view) {
+	public void rateNow(View view) {
 
 		try {
 			
-			AppActions.add("Support - Phone Call");
+			AppActions.add("Support - Rate App");
 
-			Intent intent = new Intent(Intent.ACTION_CALL);
-
-			intent.setData(Uri.parse("tel:7083209272"));
-			startActivity(intent);
+			
+			Uri uri = Uri.parse("market://details?id=" + getApplicationContext().getPackageName());
+			Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+			try {
+			  startActivity(goToMarket);
+			} catch (ActivityNotFoundException e) {
+			  startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName())));
+			}
+			
+			
 		} catch (Exception e) {
 			
-			toastShort("Error opening phone client, please try again");
 
-			(new CreateClientLogTask("Support.callNow", "Exception Caught", "error", e)).execute();
+			(new CreateClientLogTask("Support.rateNow", "Exception Caught", "error", e)).execute();
 
 		}
 		

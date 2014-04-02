@@ -27,6 +27,8 @@ public class CreatePayment implements Serializable {
     private Double mPercentPaid;
     
     private String mSplitType;
+    private String mNotes;
+
     private String mTipEntry;
     private String mPercentEntry;
     public Boolean isAnonymous;
@@ -69,7 +71,7 @@ public class CreatePayment implements Serializable {
 		}
     }
         
-    public CreatePayment(String merchantId, String customerId, String invoiceId, Double total, Double paying, Double gratuity, String account, String type, String cardType, String expiration, String pin, Double percentPaid, String splitType, String tipEntry, String percentEntry, ArrayList<DonationTypeObject> items, Boolean newAnonymous) {
+    public CreatePayment(String notes, String merchantId, String customerId, String invoiceId, Double total, Double paying, Double gratuity, String account, String type, String cardType, String expiration, String pin, Double percentPaid, String splitType, String tipEntry, String percentEntry, ArrayList<DonationTypeObject> items, Boolean newAnonymous) {
     	setMerchantId(merchantId);
     	setCustomerId(customerId);
     	setInvoiceId(invoiceId);
@@ -92,7 +94,7 @@ public class CreatePayment implements Serializable {
     	setTipEntry(tipEntry);
     	
     	isAnonymous = newAnonymous;
-    	
+    	mNotes = notes;
     	setPaidItems(items);
     }
 
@@ -216,6 +218,11 @@ public class CreatePayment implements Serializable {
     	return this.mExpiration;
     }
 
+    public String getNotes() {
+    	return this.mNotes;
+    }
+    
+    
 	public ArrayList<DonationTypeObject> getItems() {
 		return mItems;
 	}

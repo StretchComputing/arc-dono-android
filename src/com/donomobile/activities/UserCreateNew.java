@@ -5,6 +5,7 @@ import io.card.payment.CardType;
 import io.card.payment.CreditCard;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -28,9 +30,8 @@ import com.donomobile.domain.Cards;
 import com.donomobile.utils.ArcPreferences;
 import com.donomobile.utils.Constants;
 import com.donomobile.utils.Keys;
-import com.donomobile.utils.Logger;
+import com.donomobile.utils.MerchantObject;
 import com.donomobile.utils.Security;
-import com.donomobile.web.CreateUserTask;
 import com.donomobile.web.ErrorCodes;
 import com.donomobile.web.UpdateCustomerTask;
 import com.donomobile.web.rskybox.AppActions;
@@ -47,10 +48,14 @@ public class UserCreateNew extends BaseActivity {
 	private Cards enteredCard;
 	private String myPIN;
 	private boolean didCancelScan;
+	private MerchantObject myMerchant;
+    private Cards selectedCard;
+	private boolean justAddedCard;
 	
 	private TextView titleText;
 	private Button registerButton;
-
+	private Boolean isPaymentFlow;
+	
 	private boolean isCreating = false;
 
 	@Override
@@ -76,7 +81,11 @@ public class UserCreateNew extends BaseActivity {
 
 			setActionBarTitle("Register");
 
-		
+			isPaymentFlow = getIntent().getBooleanExtra(Constants.IS_PAYMENT_FLOW, false);
+			myMerchant =  (MerchantObject) getIntent().getSerializableExtra(Constants.VENUE);
+			selectedCard =  (Cards) getIntent().getSerializableExtra(Constants.SELECTED_CARD);
+			justAddedCard = getIntent().getBooleanExtra(Constants.JUST_ADD_CARD, false);
+			
 		} catch (Exception e) {
 			(new CreateClientLogTask("UserCreateNew.onCreate", "Exception Caught", "error", e)).execute();
 
@@ -528,9 +537,25 @@ public class UserCreateNew extends BaseActivity {
 							didCancelScan = false;
 							loadingDialog.dismiss();
 
-							Intent goBackProfile = new Intent(getApplicationContext(), Home.class);
-							goBackProfile.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-							startActivity(goBackProfile);
+							
+							if (isPaymentFlow){
+								Intent goBackProfile = new Intent(getApplicationContext(), ConfirmPayment.class);
+								goBackProfile.putExtra(Constants.SELECTED_CARD, selectedCard);
+								goBackProfile.putExtra(Constants.VENUE, myMerchant);				
+								goBackProfile.putExtra(Constants.JUST_ADD_CARD, justAddedCard);
+								goBackProfile.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+								startActivity(goBackProfile);
+								
+								InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+								imm.hideSoftInputFromWindow(UserCreateNew.this.passwordTextView.getWindowToken(), 0);
+								imm.hideSoftInputFromWindow(UserCreateNew.this.emailTextView.getWindowToken(), 0);
+							}else{
+								Intent goBackProfile = new Intent(getApplicationContext(), Home.class);
+								goBackProfile.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+								startActivity(goBackProfile);
+							}
+							
+							
 						}
 					} catch (Exception e) {
 						(new CreateClientLogTask("UserCreateNew.showInfoDialog.onClick", "Exception Caught", "error", e)).execute();
@@ -568,9 +593,24 @@ public class UserCreateNew extends BaseActivity {
 
 			
 			toastShort("Thank you for registering!");
-			Intent goBackProfile = new Intent(getApplicationContext(), Home.class);
-			goBackProfile.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(goBackProfile);
+			
+			if (isPaymentFlow){
+				Intent goBackProfile = new Intent(getApplicationContext(), ConfirmPayment.class);
+				goBackProfile.putExtra(Constants.SELECTED_CARD, selectedCard);
+				goBackProfile.putExtra(Constants.VENUE, myMerchant);				
+				goBackProfile.putExtra(Constants.JUST_ADD_CARD, justAddedCard);
+				goBackProfile.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(goBackProfile);
+				
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(UserCreateNew.this.passwordTextView.getWindowToken(), 0);
+				imm.hideSoftInputFromWindow(UserCreateNew.this.emailTextView.getWindowToken(), 0);
+				
+			}else{
+				Intent goBackProfile = new Intent(getApplicationContext(), Home.class);
+				goBackProfile.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(goBackProfile);
+			}
 			
 			
 			//refresh list

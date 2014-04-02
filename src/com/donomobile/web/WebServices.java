@@ -73,6 +73,7 @@ public class WebServices {
 		StringBuilder reply = null;
 		try {
 
+			Logger.d("ENTER GET RESPONSE METHOD");
 			try{
 				AppActions.add("POST API Call - URL: " + url + ", JSON INPUT: " + json);
 			}catch(Exception e){
@@ -86,6 +87,9 @@ public class WebServices {
 				httpPost.setHeader("Content-type", "application/json");
 				if(token!=null) {
 					//httpPost.setHeader("Authorization", "Basic VEU5SFNVNWZWRmxRUlY5RFZWTlVUMDFGVWpwcWFXMXRlV1JoWjJobGNrQm5iV0ZwYkM1amIyMDZNVEV4TVE9PQ==");
+					
+					
+					Logger.d("SETTING TEH AUTHORIZATION HEADER: " + token);
 					httpPost.setHeader("Authorization", "Basic " + token);
 				}
 			}
@@ -246,7 +250,7 @@ public class WebServices {
 		this.serverAddress = server;
 	}
 	
-	public String getMerchants() {
+	public String getMerchants(String token) {
 		String resp = "";
 		try {
 			currentAPI = "GetMerchants";
@@ -260,7 +264,7 @@ public class WebServices {
 			
 			Logger.d("|arc-web-services|", "GET MERCHANTS REQ = " + json.toString());
 
-			resp = this.getResponse(url, json.toString(), null);
+			resp = this.getResponse(url, json.toString(), token);
 			Logger.d("|arc-web-services|", "GET MERCHANTS RESP = " + resp);
 			return resp;
 		} catch (Exception e) {
@@ -519,7 +523,7 @@ public class WebServices {
 			json.put(WebKeys.SPLIT_TYPE, newPayment.getSplitType());
 			json.put(WebKeys.AUTH_TOKEN, "");
 			json.put(WebKeys.TAG, "");
-			json.put(WebKeys.NOTES, "");
+			json.put(WebKeys.NOTES, newPayment.getNotes());
 			
 			if (newPayment.isAnonymous){
 				json.put(WebKeys.ANONYMOUS, true);

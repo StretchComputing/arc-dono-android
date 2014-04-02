@@ -3,20 +3,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".GuestCreateCustomer" >
 
-    <TextView
-        android:id="@+id/remainingText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    
+    
+     <RelativeLayout
+        android:id="@+id/relativeLayoutHere"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="@string/guest_create_string"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textSize="16sp" />
+        android:background="@color/donoorange" >
+
+        <TextView
+            android:id="@+id/home_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_horizontal"
+            android:text="@string/guest_create_string"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/white"
+            android:textSize="13dp" />
+
+    </RelativeLayout>
+    
+     
+     
+
 
     <EditText
         android:id="@+id/guest_password_textv"
@@ -29,25 +46,27 @@
         android:hint="@string/password_hint"
         android:inputType="textPassword" />
  
-
     <TextView
         android:id="@+id/help_item_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/remainingText"
+        android:layout_below="@id/quickOne"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
         android:text="@string/guest_create_explain"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@color/darkGray" />
+        android:textColor="@color/darkerGray" />
 
     <EditText
         android:id="@+id/guest_email_textv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/guest_password_textv"
-        android:layout_below="@+id/help_item_text"
-        android:layout_marginTop="6dp"
+        android:layout_below="@id/relativeLayoutHere"
+        android:layout_marginTop="15dp"
         android:ems="10"
         android:hint="@string/email_hint"
         android:inputType="textEmailAddress" >
@@ -60,27 +79,14 @@
         android:id="@+id/resendButton"
         style="@style/DonoOrangeStyle"
         android:layout_width="130dp"
-        android:layout_height="46dp"
+        android:layout_height="42dp"
         android:layout_below="@+id/guest_password_textv"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="25dp"
         android:layout_toRightOf="@+id/center_layout"
         android:background="@drawable/dono_button_orange"
         android:onClick="onCreateClicked"
-        android:text="@string/create_string" />
-
-    <Button
-        android:id="@+id/quickOne"
-        style="@style/DonoOrangeStyle"
-        android:layout_width="130dp"
-        android:layout_height="46dp"
-        android:layout_alignBaseline="@+id/resendButton"
-        android:layout_alignBottom="@+id/resendButton"
-        android:layout_marginLeft="25dp"
-        android:layout_toLeftOf="@+id/center_layout"
-        android:background="@drawable/dono_button_orange"
-        android:onClick="onNoThanksClicked"
-        android:text="@string/nothanks_string" />
+        android:text="@string/sign_up_string" />
 
     <RelativeLayout
         android:id="@+id/center_layout"
@@ -91,5 +97,19 @@
         android:layout_marginTop="15dp" >
 
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/quickOne"
+        style="@style/DonoOrangeStyle"
+        android:layout_width="130dp"
+        android:layout_height="42dp"
+        android:layout_alignBaseline="@+id/resendButton"
+        android:layout_alignBottom="@+id/resendButton"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_toLeftOf="@+id/center_layout"
+        android:background="@drawable/dono_button_orange"
+        android:onClick="onNoThanksClicked"
+        android:text="@string/nothanks_string" />
 
 </RelativeLayout>

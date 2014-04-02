@@ -1,9 +1,11 @@
 package com.donomobile.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -11,8 +13,11 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.donomobile.ArcMobileApp;
 import com.donomobile.BaseActivity;
+import com.donomobile.domain.Cards;
 import com.donomobile.utils.ArcPreferences;
+import com.donomobile.utils.Constants;
 import com.donomobile.utils.Keys;
+import com.donomobile.utils.MerchantObject;
 import com.donomobile.web.ErrorCodes;
 import com.donomobile.web.GetTokenTask;
 import com.donomobile.web.rskybox.AppActions;
@@ -26,7 +31,11 @@ public class UserLogin extends BaseActivity {
 	private ProgressDialog loadingDialog;
 	private Button loginButton;
 	private boolean isLoggingIn = false;
-
+	private boolean isPaymentFlow = false;
+	private MerchantObject myMerchant;
+    private Cards selectedCard;
+	private boolean justAddedCard;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		try {
@@ -43,7 +52,12 @@ public class UserLogin extends BaseActivity {
 			
 			loginButton = (Button) findViewById(R.id.resendButton);
 			loginButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
-
+			isPaymentFlow = getIntent().getBooleanExtra(Constants.IS_PAYMENT_FLOW, false);
+			myMerchant =  (MerchantObject) getIntent().getSerializableExtra(Constants.VENUE);
+			selectedCard =  (Cards) getIntent().getSerializableExtra(Constants.SELECTED_CARD);
+			justAddedCard = getIntent().getBooleanExtra(Constants.JUST_ADD_CARD, false);
+			
+			
 			setActionBarTitle("Login");
 
 			
@@ -129,9 +143,25 @@ public class UserLogin extends BaseActivity {
 								toastShort("Login Successful!");
 								loadingDialog.dismiss();
 
-								Intent goBackProfile = new Intent(getApplicationContext(), Home.class);
-								goBackProfile.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-								startActivity(goBackProfile);
+								if (isPaymentFlow){
+									Intent goBackProfile = new Intent(getApplicationContext(), ConfirmPayment.class);
+									goBackProfile.putExtra(Constants.SELECTED_CARD, selectedCard);
+									goBackProfile.putExtra(Constants.VENUE, myMerchant);				
+									goBackProfile.putExtra(Constants.JUST_ADD_CARD, justAddedCard);
+									goBackProfile.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+									startActivity(goBackProfile);
+									
+
+									InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+									imm.hideSoftInputFromWindow(UserLogin.this.passwordTextView.getWindowToken(), 0);
+									imm.hideSoftInputFromWindow(UserLogin.this.emailTextView.getWindowToken(), 0);
+
+								}else{
+									Intent goBackProfile = new Intent(getApplicationContext(), Home.class);
+									goBackProfile.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+									startActivity(goBackProfile);
+								}
+								
 
 							}else{
 								toastShort("Login error, please try again.");

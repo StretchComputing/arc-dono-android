@@ -1,10 +1,19 @@
 package com.donomobile.activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.res.Resources.NotFoundException;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
@@ -34,6 +43,7 @@ public class GuestCreateCustomer extends BaseActivity {
 	private TextView titleText;
 	private TextView subText;
 	private boolean isCreating = false;
+	private AlertDialog pinDialog;
 
 	private MerchantObject myMerchant;
 	
@@ -66,7 +76,7 @@ public class GuestCreateCustomer extends BaseActivity {
 			button2 = (Button) findViewById (R.id.quickOne);
 			button2.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
-			titleText = (TextView) findViewById(R.id.remainingText);
+			titleText = (TextView) findViewById(R.id.home_title);
 			titleText.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			
 			subText = (TextView) findViewById(R.id.help_item_text);
@@ -103,6 +113,7 @@ public class GuestCreateCustomer extends BaseActivity {
 
 					register();
 				}else{
+					isCreating = false;
 					toastShort("Please enter an email address and password.");
 				}
 			}
@@ -135,29 +146,41 @@ public class GuestCreateCustomer extends BaseActivity {
 				AppActions.add("Guest Create Customer - No Thanks Clicked");
 
 		 		ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
+		 		
+		 		if(myPrefs.getString(Keys.DID_SHOW_ARE_YOU_SURE_GUEST) != null && myPrefs.getString(Keys.DID_SHOW_ARE_YOU_SURE_GUEST).length() > 0 ){
+		 			
+		 			if (myPrefs.getString(Keys.DEFAULT_CHURCH_ID) != null && myPrefs.getString(Keys.DEFAULT_CHURCH_ID).length() > 0){
+						
+						//if you have a default church ID, go there
+						Intent single = new Intent(getApplicationContext(), DefaultLocation.class);
+						single.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						single.putExtra(Constants.VENUE, myMerchant);
+						single.putExtra(Constants.DID_PAY, true);
 
-				if (myPrefs.getString(Keys.DEFAULT_CHURCH_ID) != null && myPrefs.getString(Keys.DEFAULT_CHURCH_ID).length() > 0){
-					
-					//if you have a default church ID, go there
-					Intent single = new Intent(getApplicationContext(), DefaultLocation.class);
-					single.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					single.putExtra(Constants.VENUE, myMerchant);
-					single.putExtra(Constants.DID_PAY, true);
+						startActivity(single);
+			             
+			             
+					}else{
+						 Intent goBackHome = new Intent(getApplicationContext(), Home.class);
+			             goBackHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			             startActivity(goBackHome);
 
-					startActivity(single);
-		             
-		             
-				}else{
-					 Intent goBackHome = new Intent(getApplicationContext(), Home.class);
-		             goBackHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		             startActivity(goBackHome);
+					}
+		 			
+		 			
+		 		}else{
+		 			isCreating = false;
+		 			myPrefs.putAndCommitString(Keys.DID_SHOW_ARE_YOU_SURE_GUEST, "yes");
+		 			showPinDialog();
+		 		}
 
-				}
+				
 			}
 			
 		} catch (Exception e) {
 			(new CreateClientLogTask("GuestCreateCustomer.onNoThanksClicked", "Exception Caught", "error", e)).execute();
 		}
+		
 		
 	}
 
@@ -221,7 +244,7 @@ public class GuestCreateCustomer extends BaseActivity {
 							
 						}else{
 							AppActions.add("Guest Create Customer - Register Failed - Error Code:" + errorCode);
-
+							isCreating = false;
 							if (errorCode != 0){
 								
 								String errorMsg = "";
@@ -261,4 +284,155 @@ public class GuestCreateCustomer extends BaseActivity {
 		
 		
 	}
+	
+	
+	
+	
+	private void showPinDialog() {
+		try {
+			
+
+			pinDialog = null;
+			
+			LayoutInflater factory = LayoutInflater.from(this);
+			final View makePaymentView = factory.inflate(R.layout.pin_dialog, null);
+			EditText input = (EditText) makePaymentView.findViewById(R.id.paymentInput);			
+			input.setVisibility(View.GONE);
+			
+			TextView paymentTitle = (TextView) makePaymentView.findViewById(R.id.paymentTitle);
+			paymentTitle.setText("Are you sure you want to remain anonymous?  For tax purposes we recommend  you sign up so you can receive email receipts.");
+			input.setGravity(Gravity.CENTER | Gravity.BOTTOM);
+
+			input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(6) });
+			TextView remainingBalance = (TextView) makePaymentView.findViewById(R.id.paymentRemaining);
+			//remainingBalance.setVisibility(View.GONE);
+			remainingBalance.setText("Remain Anonymous?");
+			
+	
+			
+			int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+			
+			//Set colors
+			if (currentapiVersion <= android.os.Build.VERSION_CODES.GINGERBREAD_MR1){
+
+				paymentTitle.setTextColor(getResources().getColor(R.color.white));
+				remainingBalance.setTextColor(getResources().getColor(R.color.white));
+
+			}
+			
+			
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(GuestCreateCustomer.this);
+			builder.setTitle(getString(R.string.app_dialog_title));
+			builder.setView(makePaymentView);
+			//builder.setIcon(R.drawable.logo);
+			builder.setCancelable(false);
+			builder.setPositiveButton("Sign Up", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+
+				}
+			});
+			
+			
+			builder.setNegativeButton("No Thanks", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+
+				}
+			});
+			
+			
+			
+			/*
+			builder.setOnCancelListener(new OnCancelListener() {
+
+				@Override
+				public void onCancel(DialogInterface dialog) {
+				}
+			});
+			*/
+			pinDialog = builder.create();
+			
+			pinDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+			pinDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+				@Override
+				public void onShow(DialogInterface dialog) {
+
+					Button b = pinDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+					b.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View view) {
+							
+							try {
+								
+								pinDialog.dismiss();
+							} catch (Exception e) {
+								(new CreateClientLogTask("GuestCreateCustomer.showPinDialog.onClick", "Exception Caught", "error", e)).execute();
+
+							}
+						
+							
+						}
+					});
+					
+					
+					Button n = pinDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+					n.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View view) {
+							
+							try {
+								
+								pinDialog.dismiss();
+
+								ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
+						 		
+								if (myPrefs.getString(Keys.DEFAULT_CHURCH_ID) != null && myPrefs.getString(Keys.DEFAULT_CHURCH_ID).length() > 0){
+									
+									//if you have a default church ID, go there
+									Intent single = new Intent(getApplicationContext(), DefaultLocation.class);
+									single.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+									single.putExtra(Constants.VENUE, myMerchant);
+									single.putExtra(Constants.DID_PAY, true);
+
+									startActivity(single);
+						             
+						             
+								}else{
+									 Intent goBackHome = new Intent(getApplicationContext(), Home.class);
+						             goBackHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						             startActivity(goBackHome);
+
+								}
+						 			
+						 			
+						 			
+							} catch (Exception e) {
+								(new CreateClientLogTask("GuestCreateCustomer.showPinDialog.onClick", "Exception Caught", "error", e)).execute();
+
+							}
+						
+							
+						}
+					});
+					
+					
+				}
+			});
+			pinDialog.show();
+		} catch (NotFoundException e) {
+			(new CreateClientLogTask("GuestCreateCustomer.showPinDialog", "Exception Caught", "error", e)).execute();
+
+		}
+		
+	}
+	
+	
 }
