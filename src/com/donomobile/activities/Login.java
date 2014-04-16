@@ -1,5 +1,6 @@
 package com.donomobile.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.Resources.NotFoundException;
@@ -10,14 +11,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.donomobile.BaseActivity;
 import com.donomobile.web.rskybox.CreateClientLogTask;
 import com.donomobileapp.R;
 
-public class Login extends BaseActivity {
+public class Login extends Activity {
 
 	public String TAG = "Login";
 
@@ -26,14 +24,14 @@ public class Login extends BaseActivity {
 	}
 
 	public Login(int titleRes) {
-		super(titleRes);
+		//super(titleRes);
 	}
 
 	private LinearLayout theView;
 	private EditText usernameEt;
 	private EditText passwordEt;
 	private CheckBox rememberMeCb;
-	private ActionBar actionBar;
+	//private ActionBar actionBar;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -61,9 +59,9 @@ public class Login extends BaseActivity {
 
 	protected void initActionBar() {
 		try {
-			actionBar = getSupportActionBar();
-			actionBar.setTitle(R.string.app_name);
-			actionBar.setDisplayHomeAsUpEnabled(false);
+			//actionBar = getSupportActionBar();
+			//actionBar.setTitle(R.string.app_name);
+			//actionBar.setDisplayHomeAsUpEnabled(false);
 		} catch (Exception e) {
 			(new CreateClientLogTask("Login.initActionBar", "Exception Caught", "error", e)).execute();
 
@@ -83,11 +81,12 @@ public class Login extends BaseActivity {
 //		putBoolean(Constants.PREFS_REMEMBER_ME_KEY, rememberMeCb.isChecked());
 	}
 
+	/*
 	@Override
 	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
-		MenuInflater inflater = getSupportMenuInflater();
-		inflater.inflate(R.menu.main_menu, menu);
-		return true;
+		//MenuInflater inflater = getSupportMenuInflater();
+		//inflater.inflate(R.menu.main_menu, menu);
+		return false;
 	}
 
 	@Override
@@ -102,14 +101,15 @@ public class Login extends BaseActivity {
 		}
 		return super.onMenuItemSelected(featureId, item);
 	}
-
+	*/
+	
 	public void onLoginClick(View v) {
 		saveCredentials();
 		// startActivity(new Intent(getApplicationContext(), Setup.class));
 		Intent goHome = new Intent(getApplicationContext(), Home.class);
 		goHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivity(goHome);
-		slideRightLeft();
-		finish();
+		//slideRightLeft();
+		//finish();
 	}
 }

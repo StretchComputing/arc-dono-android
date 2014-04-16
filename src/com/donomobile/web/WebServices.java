@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
@@ -20,10 +21,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.donomobile.ArcMobileApp;
+import com.donomobile.domain.Cards;
 import com.donomobile.domain.CreatePayment;
 import com.donomobile.domain.CreateReview;
 import com.donomobile.utils.DonationTypeObject;
 import com.donomobile.utils.Logger;
+import com.donomobile.utils.MerchantObject;
+import com.donomobile.utils.RecurringDonationObject;
 import com.donomobile.utils.Utils;
 import com.donomobile.web.rskybox.AppActions;
 import com.donomobile.web.rskybox.CreateClientLogTask;
@@ -33,6 +37,7 @@ public class WebServices {
 	private DefaultHttpClient httpClient;
 	private HttpPost httpPost;
 	private HttpGet httpGet;
+	private HttpDelete httpDelete;
 
 
 	private HttpResponse httpResponse;
@@ -153,6 +158,93 @@ public class WebServices {
 		return reply.toString();
 	}
 
+	
+	private String getResponseDelete(String url, String json, String token) {
+		StringBuilder reply = null;
+		try {
+
+			Logger.d("ENTER Delete RESPONSE METHOD");
+			try{
+				AppActions.add("DELETE API Call - URL: " + url + ", JSON INPUT: " + json);
+			}catch(Exception e){
+				
+			}
+			this.httpClient = new DefaultHttpClient();
+			httpDelete = new HttpDelete(url);
+			
+
+			if (json != null && json != "") {
+				//httpDelete.setEntity(new ByteArrayEntity(json.getBytes("UTF8")));
+				httpDelete.setHeader("Content-type", "application/json");
+				if(token!=null) {
+					//httpPost.setHeader("Authorization", "Basic VEU5SFNVNWZWRmxRUlY5RFZWTlVUMDFGVWpwcWFXMXRlV1JoWjJobGNrQm5iV0ZwYkM1amIyMDZNVEV4TVE9PQ==");
+					
+					
+					Logger.d("SETTING TEH AUTHORIZATION HEADER: " + token);
+					httpDelete.setHeader("Authorization", "Basic " + token);
+				}
+			}
+			
+		
+			
+			HttpParams httpParameters = new BasicHttpParams();
+			// Set the timeout in milliseconds until a connection is established.
+			// The default value is zero, that means the timeout is not used. 
+			int timeoutConnection = 15000;
+			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+			// Set the default socket timeout (SO_TIMEOUT) 
+			// in milliseconds which is the timeout for waiting for data.
+			int timeoutSocket = 15000;
+			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+			httpClient.setParams(httpParameters);
+			
+			
+			httpResponse = httpClient.execute(httpDelete);
+
+			httpStatusCode = httpResponse.getStatusLine().getStatusCode();
+
+			if (httpStatusCode != 200 && httpStatusCode != 201 && httpStatusCode != 422){
+				handleHttpStatusError();
+				return null;
+			}else{
+				httpEntity = httpResponse.getEntity();
+
+				BufferedReader in = new BufferedReader(new InputStreamReader(
+						httpEntity.getContent()));
+				String inputLine;
+
+				reply = new StringBuilder();
+
+				while ((inputLine = in.readLine()) != null) {
+					reply.append(inputLine);
+				}
+				in.close();
+
+				httpEntity.consumeContent();
+				httpClient.getConnectionManager().shutdown();
+			}
+			
+		} catch (IOException e) {
+			
+
+			(new CreateClientLogTask("WebServices.getResponseDelete", "Exception Caught", "error", e)).execute();
+
+			Logger.e("|Delete RESONSE ERROR| " + e.getMessage());
+			setError(e.getMessage());
+			return null;
+		}
+
+		
+		try{
+			JSONObject responseJson =  new JSONObject(reply.toString());
+			AppActions.add("RESPONSE JSON: " + responseJson);
+		}catch(Exception e){
+			
+		}
+		return reply.toString();
+	}
+	
+	
 	
 	
 	private String getResponseGet(String url, String token) {
@@ -359,11 +451,13 @@ public class WebServices {
 
 			json.put(WebKeys.IS_GUEST, false);
 			json.put(WebKeys.ACCEPT_TERMS, true);
-
+			json.put(WebKeys.PASSPHRASE, "123");
 
 			json.put(WebKeys.APP_INFO, getAppInfoObject());
 
 			
+			Logger.d("|arc-web-services|", "REGISTER JSON  = " + json.toString());
+
 			resp = this.getResponse(url, json.toString(), null);
 			Logger.d("|arc-web-services|", "REGISTER RESP = " + resp);
 			return resp;
@@ -375,24 +469,28 @@ public class WebServices {
 		}
 	}
 	
-	public String updateCustomer(String login, String password, String token) {
+	public String updateCustomer(String firstName, String lastName, String token) {
 		String resp = "";
 		try {
 			currentAPI = "UpdateCustomer";
 
 			String url = this.serverAddress + URLs.UPDATE_CUSTOMER;
-			Logger.d("|arc-web-services|", "REGISTER URL  = " + url);
+			Logger.d("|arc-web-services|", "UPDATENAME URL  = " + url);
 			
 			JSONObject json = new JSONObject();
-			json.put(WebKeys.EMAIL,login);
-			json.put(WebKeys.PASSWORD,password);
-			json.put(WebKeys.IS_GUEST, false);
+			//json.put(WebKeys.EMAIL,login);
+			//json.put(WebKeys.PASSWORD,password);
+			//json.put(WebKeys.IS_GUEST, false);
+
+			json.put(WebKeys.FIRST_NAME, firstName);
+			json.put(WebKeys.LAST_NAME, lastName);
 
 			json.put(WebKeys.APP_INFO, getAppInfoObject());
 
-			
+			Logger.d("|arc-web-services|", "UPDATENAME JSON = " + json.toString());
+
 			resp = this.getResponse(url, json.toString(), token);
-			Logger.d("|arc-web-services|", "REGISTER RESP = " + resp);
+			Logger.d("|arc-web-services|", "UPDATENAME RESP = " + resp);
 			return resp;
 		} catch (Exception e) {
 			(new CreateClientLogTask("WebServices.updateCustomer", "Exception Caught", "error", e)).execute();
@@ -415,7 +513,7 @@ public class WebServices {
 			json.put(WebKeys.TICKET_ID, ticketId);
 			json.put(WebKeys.APP_INFO, getAppInfoObject());
 
-			Logger.d("CONFIRM PAYMENT JSON =\n\n" + json.toString());
+			Logger.d("CONFIRM REGISTER JSON =\n\n" + json.toString());
 			
 			resp = this.getResponse(url, json.toString(), null);
 			Logger.d("|arc-web-services|", "CONFIRM REGISTER RESP = " + resp);
@@ -661,6 +759,109 @@ public class WebServices {
 			return resp;
 		}
 	}
+	
+	//RecurringDonations History
+	
+	public String getRecurringDonations(String token, String customerId) {
+		String resp = "";
+		try {
+			currentAPI = "GetRecurringDonations";
+			String url = this.serverAddress + URLs.RECURRING_DONATIONS;
+			Logger.d("|arc-web-services|", "GET Recurring URL  = " + url);
+			
+			JSONObject json = new JSONObject();
+			json.put(WebKeys.USER_ID, customerId);
+			json.put(WebKeys.APP_INFO, getAppInfoObject());
+			
+			Logger.d("|arc-web-services|", "GET Recurring REQ  = " + json.toString());
+
+			resp = this.getResponse(url, json.toString(), token);
+			Logger.d("|arc-web-services|", "GET Recurring RESP = " + resp);
+			return resp;
+		} catch (Exception e) {
+			(new CreateClientLogTask("WebServices.getRecurringDonations", "Exception Caught", "error", e)).execute();
+
+			setError(e.getMessage());
+			return resp;
+		}
+	}
+	
+	
+	//RecurringDonations Delete
+	
+		public String deleteRecurringDonations(String token, String scheduleId) {
+			String resp = "";
+			try {
+				currentAPI = "GetRecurringDonations";
+				String url = this.serverAddress + URLs.DELETE_RECURRING_DONATION + scheduleId;
+				Logger.d("|arc-web-services|", "GET Recurring URL  = " + url);
+				
+				JSONObject json = new JSONObject();
+				json.put(WebKeys.APP_INFO, getAppInfoObject());
+				
+				Logger.d("|arc-web-services|", "DELETE Recurring REQ  = " + json.toString());
+
+				resp = this.getResponseDelete(url, json.toString(), token);
+				Logger.d("|arc-web-services|", "GET Recurring RESP = " + resp);
+				return resp;
+			} catch (Exception e) {
+				(new CreateClientLogTask("WebServices.deleteRecurringDonation", "Exception Caught", "error", e)).execute();
+
+				setError(e.getMessage());
+				return resp;
+			}
+		}
+		
+		
+		public String createRecurringDonations(String token, String customerId, MerchantObject merchant, RecurringDonationObject recurringObject, String cardNumber, String cardExpiration, String ccv){
+			
+			
+			String resp = "";
+			try {
+				currentAPI = "GetRecurringDonations";
+				String url = this.serverAddress + URLs.CREATE_RECURRING_DONATION;
+				Logger.d("|arc-web-services|", "GET Recurring URL  = " + url);
+				
+				JSONObject json = new JSONObject();
+				
+				json.put(WebKeys.TYPE, recurringObject.type);
+				json.put(WebKeys.CUSTOMER_ID, customerId);
+				json.put(WebKeys.MERCHANT_ID, merchant.merchantId);
+				json.put(WebKeys.INVOICE_ID, merchant.invoiceId);
+				json.put(WebKeys.VALUE, recurringObject.value);
+				json.put(WebKeys.X_OF_MONTH, recurringObject.xOfMonth);
+				json.put(WebKeys.AMOUNT, recurringObject.amount);
+				json.put(WebKeys.GRATUITY, recurringObject.gratuity);
+				json.put(WebKeys.AUTHORIZATION_TOKEN, token);
+
+				JSONObject card = new JSONObject();
+
+				
+				card.put(WebKeys.NUMBER, cardNumber);
+				card.put(WebKeys.EXPIRATION_DATE, cardExpiration);
+				card.put(WebKeys.CVV, ccv);
+
+				json.put(WebKeys.CREDIT_CARD, card);
+
+				
+				json.put(WebKeys.APP_INFO, getAppInfoObject());
+				
+				Logger.d("|arc-web-services|", "CREATE Recurring REQ  = " + json.toString());
+
+				resp = this.getResponse(url, json.toString(), token);
+				Logger.d("|arc-web-services|", "CREATE Recurring RESP = " + resp);
+				return resp;
+			} catch (Exception e) {
+				(new CreateClientLogTask("WebServices.createRecurringDonation", "Exception Caught", "error", e)).execute();
+
+				setError(e.getMessage());
+				return resp;
+			}
+			
+			
+		}
+		
+		
 	
 	
 	

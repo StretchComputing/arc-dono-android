@@ -29,6 +29,7 @@ import com.donomobile.domain.Cards;
 import com.donomobile.utils.Constants;
 import com.donomobile.utils.Logger;
 import com.donomobile.utils.MerchantObject;
+import com.donomobile.utils.RecurringDonationObject;
 import com.donomobile.utils.Security;
 import com.donomobile.web.rskybox.AppActions;
 import com.donomobile.web.rskybox.CreateClientLogTask;
@@ -48,7 +49,8 @@ public class FundsEntry extends BaseActivity {
 	private EditText ccvText;
 	private Boolean shouldRun = true;
 	private Boolean isPaymentFlow = false;
-	
+    private RecurringDonationObject myRecurringObject = null;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		
@@ -78,6 +80,7 @@ public class FundsEntry extends BaseActivity {
 			setFieldFormatters();
 			
 			myMerchant =  (MerchantObject) getIntent().getSerializableExtra(Constants.VENUE);
+			myRecurringObject =  (RecurringDonationObject) getIntent().getSerializableExtra(Constants.RECURRING_OBJECT);
 
 			if (myMerchant != null){
 				isPaymentFlow = true;
@@ -598,9 +601,18 @@ public class FundsEntry extends BaseActivity {
 		
 		try {
 			
+			if (myRecurringObject != null){
 			
 			
-			if (isPaymentFlow){
+				Intent single = new Intent(getApplicationContext(), RecurringDonationFinal.class);
+				single.putExtra(Constants.VENUE, myMerchant);	
+				single.putExtra(Constants.RECURRING_OBJECT, myRecurringObject);	
+				single.putExtra(Constants.SELECTED_CARD, enteredCard);
+				single.putExtra(Constants.JUST_ADD_CARD, true);
+				startActivity(single);
+				
+				
+			}else if (isPaymentFlow){
 							
 				
 				Intent confirmPayment = new Intent(getApplicationContext(), ConfirmPayment.class);

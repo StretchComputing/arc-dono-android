@@ -15,6 +15,9 @@ public final class Keys {
 	public static final String CUSTOMER_TOKEN = "CUSTOMER_TOKEN";
 	public static final String CUSTOMER_EMAIL = "CUSTOMER_EMAIL";
 	
+	public static final String CUSTOMER_FIRST_NAME = "CUSTOMER_FIRST_NAME";
+	public static final String CUSTOMER_LAST_NAME = "CUSTOMER_LAST_NAME";
+
 	public static final String DUTCH_URL = "DUTCH_URL";
 
 	

@@ -25,10 +25,13 @@ public class UpdateCustomerTask extends AsyncTask<Void, Void, Void> {
 	private Context mContext;
 	private int mErrorCode;
 	
-	public UpdateCustomerTask(String login, String password, Context context) {
+	private String mFirstName;
+	private String mLastName;
+
+	public UpdateCustomerTask(String firstName, String lastName, Context context) {
 		super();
-		mLogin = login;
-		mPassword = password;
+		mFirstName = firstName;
+		mLastName = lastName;
 		mIsGuest = false;
 		mNewCustomerToken = "";
 		mContext = context;
@@ -59,10 +62,10 @@ public class UpdateCustomerTask extends AsyncTask<Void, Void, Void> {
 		WebServices webService = new WebServices(new ArcPreferences(mContext).getServer());
 		
 		ArcPreferences myPrefs = new ArcPreferences(mContext);
-		String guestToken = myPrefs.getString(Keys.GUEST_TOKEN);
+		String guestToken = myPrefs.getString(Keys.CUSTOMER_TOKEN);
 		
 		
-		mDevResponse = webService.updateCustomer(mLogin, mPassword, guestToken);
+		mDevResponse = webService.updateCustomer(mFirstName, mLastName, guestToken);
 		
 		if (mDevResponse == null){
 

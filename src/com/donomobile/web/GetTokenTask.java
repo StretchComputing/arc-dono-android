@@ -28,6 +28,9 @@ public class GetTokenTask extends AsyncTask<Void, Void, Void> {
 	private int mErrorCode;
 	private Boolean isAdmin;
 	
+	private String mFirstName;
+	private String mLastName;
+	
 	public GetTokenTask(String login, String password, boolean isGuest, Context context) {
 		super();
 		mLogin = login;
@@ -43,6 +46,8 @@ public class GetTokenTask extends AsyncTask<Void, Void, Void> {
 		mProdResponse = null;
 		mErrorCode = 0;
 		isAdmin = false;
+		mFirstName = "";
+		mLastName = "";
 	}
 	
 	@Override
@@ -95,6 +100,9 @@ public class GetTokenTask extends AsyncTask<Void, Void, Void> {
 					mDevCustomerId = result.getString(WebKeys.ID);
 					mDevToken = result.getString(WebKeys.TOKEN);
 					
+					mFirstName = result.getString(WebKeys.FIRST_NAME);
+					mLastName = result.getString(WebKeys.LAST_NAME);
+
 					try{
 						isAdmin = result.getBoolean(WebKeys.ADMIN);
 					}catch(Exception e){
@@ -163,5 +171,12 @@ public class GetTokenTask extends AsyncTask<Void, Void, Void> {
 	
 	public Boolean getIsAdmin(){
 		return isAdmin;
+	}
+	public String getFirstName(){
+		return mFirstName;
+	}
+	
+	public String getLastName(){
+		return mLastName;
 	}
 }

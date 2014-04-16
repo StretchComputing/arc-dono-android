@@ -30,7 +30,11 @@ public final class URLs {
 	public static final String SEND_RECEIPT = "payments/sendreceipt";
 	public static final String PAYMENT_HISTORY = "payments/list";
 
-	
+	public static final String RECURRING_DONATIONS = "customers/schedule/list";
+
+	public static final String DELETE_RECURRING_DONATION = "customers/schedule/delete/";
+	public static final String CREATE_RECURRING_DONATION = "customers/schedule/create";
+
 	public static final String CREATE_REVIEW = "reviews/new";
 
 	public static String getHost(String theUrl) {

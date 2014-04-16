@@ -14,11 +14,21 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import android.os.Handler;
+import com.donomobile.utils.Logger;
+
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.os.Handler;
 import android.widget.ImageView;
+
 import com.donomobileapp.R;
 
 public class ImageLoader {
@@ -37,12 +47,15 @@ public class ImageLoader {
     final int stub_id=R.drawable.stub;
     public void DisplayImage(String url, ImageView imageView)
     {
+
         imageViews.put(imageView, url);
         Bitmap bitmap=memoryCache.get(url);
-        if(bitmap!=null)
+        if(bitmap!=null){
+        	bitmap = getRoundedCornerBitmap(bitmap, 8);
             imageView.setImageBitmap(bitmap);
-        else
+        }else
         {
+
             queuePhoto(url, imageView);
             imageView.setImageResource(stub_id);
         }
@@ -77,6 +90,7 @@ public class ImageLoader {
             os.close();
             conn.disconnect();
             bitmap = decodeFile(f);
+            
             return bitmap;
         } catch (Throwable ex){
            ex.printStackTrace();
@@ -167,23 +181,62 @@ public class ImageLoader {
     //Used to display bitmap in the UI thread
     class BitmapDisplayer implements Runnable
     {
+
+
         Bitmap bitmap;
         PhotoToLoad photoToLoad;
         public BitmapDisplayer(Bitmap b, PhotoToLoad p){bitmap=b;photoToLoad=p;}
         public void run()
         {
+       
             if(imageViewReused(photoToLoad))
                 return;
-            if(bitmap!=null)
+            if(bitmap!=null){
+            	
+            	bitmap = getRoundedCornerBitmap(bitmap, 8);
                 photoToLoad.imageView.setImageBitmap(bitmap);
-            else
+            }
+            else{
                 photoToLoad.imageView.setImageResource(stub_id);
+
+            }
         }
     }
 
     public void clearCache() {
         memoryCache.clear();
         fileCache.clear();
+    }
+    
+    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
+    	
+    	try{
+    		
+    		Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap
+                    .getHeight(), Config.ARGB_8888);
+            Canvas canvas = new Canvas(output);
+
+            final int color = 0xff424242;
+            final Paint paint = new Paint();
+            final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+            final RectF rectF = new RectF(rect);
+            final float roundPx = pixels;
+
+            paint.setAntiAlias(true);
+            canvas.drawARGB(0, 0, 0, 0);
+            paint.setColor(color);
+            canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+
+            paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+            canvas.drawBitmap(bitmap, rect, rect, paint);
+
+
+            return output;
+    		
+    	}catch(Exception e){
+    		return bitmap;
+    	}
+        
     }
 
 }

@@ -50,7 +50,7 @@ public class BaseActivity extends SlidingFragmentActivity {
 	// -keepclassmembers class io.card.** {
 	private static Integer activityCount = 0;
 
-	private ActionBar actionBar;
+	protected ActionBar actionBar;
 	private ArcPreferences myPrefs;
 	private int mTitleRes;
 	protected ListFragment mFrag;
@@ -115,7 +115,6 @@ public class BaseActivity extends SlidingFragmentActivity {
 			initActionBar();
 			initContentProvider();
 
-			Logger.d("*******SETTING PREFS IN ON CREATE");
 			myPrefs = new ArcPreferences(getApplicationContext());
 			// theView = (LinearLayout) findViewById(R.id.login_layout);
 			// theView.setAnimation(AnimationUtils.loadAnimation(this,
@@ -127,6 +126,8 @@ public class BaseActivity extends SlidingFragmentActivity {
 		}
 	}
 
+	
+	
 	protected Typeface getModernPicsTypeface() {
 		return ArcMobileApp.getModernPicsTypeface();
 	}
@@ -418,11 +419,7 @@ public class BaseActivity extends SlidingFragmentActivity {
 	protected void toastShort(String message) {
 		
 		try {
-			toast(message, Toast.LENGTH_LONG);
-			
-	
-			
-			
+			toast(message, Toast.LENGTH_LONG);			
 		} catch (Exception e) {
 			(new CreateClientLogTask("BaseActivity.toastShort", "Exception Caught", "error", e)).execute();
 

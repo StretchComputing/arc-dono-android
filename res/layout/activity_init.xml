@@ -85,23 +85,11 @@
         android:background="@color/darkGray" >
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/button_call"
-        style="@style/DonoGreenStyle"
-        android:layout_width="204dp"
-        android:layout_height="46dp"
-        android:layout_above="@+id/relativeLayout1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="25dp"
-        android:background="@drawable/dono_button_green"
-        android:onClick="onStartClicked"
-        android:text="@string/start_using_string" />
-
     <ViewFlipper
         android:id="@+id/viewFlipper1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/button_call"
+        android:layout_above="@+id/button_call"
         android:layout_below="@+id/p_date"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="0dp" >
@@ -215,5 +203,29 @@
         </RelativeLayout>
 
     </ViewFlipper>
+
+    <Button
+        android:id="@+id/Button01"
+        style="@style/DonoGreenStyle"
+        android:layout_width="150dp"
+        android:layout_height="46dp"
+        android:layout_alignBaseline="@+id/button_call"
+        android:layout_alignBottom="@+id/button_call"
+        android:layout_alignLeft="@+id/quickFour"
+        android:background="@drawable/dono_button_green"
+        android:onClick="onCreateNewClicked"
+        android:text="@string/register_only_string" />
+
+    <Button
+        android:id="@+id/button_call"
+        style="@style/DonoGreenStyle"
+        android:layout_width="150dp"
+        android:layout_height="46dp"
+        android:layout_above="@+id/relativeLayout1"
+        android:layout_alignLeft="@+id/button_email"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/dono_button_green"
+        android:onClick="onLogInClicked"
+        android:text="@string/log_in_text" />
 
 </RelativeLayout>

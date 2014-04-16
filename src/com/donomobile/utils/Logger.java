@@ -1,6 +1,9 @@
 package com.donomobile.utils;
 
+import android.content.pm.ApplicationInfo;
 import android.util.Log;
+
+import com.donomobile.ArcMobileApp;
 
 public final class Logger {
 	
@@ -9,7 +12,11 @@ public final class Logger {
 	
 	// PRINT DEBUG MESSAGES TO LOGCAT
 	public static final void d(String tag, String message) {
-		if (ShouldDebug){
+		
+		ApplicationInfo applicationInfo = ArcMobileApp.getContext().getApplicationInfo();
+		boolean isDebuggable = (0 != (applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE));
+
+		if (ShouldDebug && isDebuggable){
 			Log.d(tag, message);
 
 		}

@@ -13,7 +13,8 @@ public final class WebKeys {
 	public static final String PASSWORD = "Password";
 	public static final String IS_GUEST = "IsGuest";
 	public static final String ACCEPT_TERMS = "AcceptTerms";
-
+	public static final String PASSPHRASE = "PassPhrase";
+	
 	public static final String FIRST_NAME = "FirstName";
 	public static final String LAST_NAME = "LastName";
 
@@ -85,6 +86,8 @@ public final class WebKeys {
 	// PAYMENTS
 	public static final String PAYMENT_ID = "PaymentId";
 	public static final String CUSTOMER_ID = "CustomerId";
+	public static final String USER_ID = "UserId";
+	public static final String X_OF_MONTH = "xOfMonth";
 	public static final String CONFIRMATION = "Confirmation";
 	public static final String CARD = "Card";
 
@@ -97,6 +100,8 @@ public final class WebKeys {
 	public static final String ITEM_ID = "ItemId";
 	public static final String PERCENT = "Percent";
 	public static final String AUTH_TOKEN = "AuthenticationToken";
+	public static final String AUTHORIZATION_TOKEN = "AuthorizationToken";
+
 	
 	public static final String INVOICE_AMOUNT = "InvoiceAmount";
 	public static final String FUND_SOURCE_ACCOUNT = "FundSourceAccount";
@@ -109,6 +114,12 @@ public final class WebKeys {
 	public static final String PERCENT_ENTRY = "PercentEntry";
 	
 	public static final String TICKET_ID = "TicketId";
+	
+	public static final String NUMBER = "Number";
+	public static final String EXPIRATION_DATE = "ExpirationDate";
+	public static final String CVV = "CVV";
+	public static final String CREDIT_CARD = "CreditCard";
+
 	
 	//Review
 	public static final String COMMENTS = "Comments";

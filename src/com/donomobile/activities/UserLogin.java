@@ -1,5 +1,6 @@
 package com.donomobile.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -8,11 +9,11 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.donomobile.ArcMobileApp;
-import com.donomobile.BaseActivity;
 import com.donomobile.domain.Cards;
 import com.donomobile.utils.ArcPreferences;
 import com.donomobile.utils.Constants;
@@ -24,7 +25,7 @@ import com.donomobile.web.rskybox.AppActions;
 import com.donomobile.web.rskybox.CreateClientLogTask;
 import com.donomobileapp.R;
 
-public class UserLogin extends BaseActivity {
+public class UserLogin extends Activity {
 
 	private TextView emailTextView;
 	private TextView passwordTextView;
@@ -58,7 +59,7 @@ public class UserLogin extends BaseActivity {
 			justAddedCard = getIntent().getBooleanExtra(Constants.JUST_ADD_CARD, false);
 			
 			
-			setActionBarTitle("Login");
+			//setActionBarTitle("Login");
 
 			
 		} catch (Exception e) {
@@ -67,12 +68,14 @@ public class UserLogin extends BaseActivity {
 		}
 	}
 
+	/*
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.action_bar_menu, menu);
 		return true;
 	}
+	*/
 	
 	@Override
 	protected void onResume() {
@@ -133,6 +136,10 @@ public class UserLogin extends BaseActivity {
 								myPrefs.putAndCommitString(Keys.CUSTOMER_ID, getDevCustomerId());
 								myPrefs.putAndCommitString(Keys.CUSTOMER_EMAIL, UserLogin.this.emailTextView.getText().toString());
 
+								myPrefs.putAndCommitString(Keys.CUSTOMER_FIRST_NAME, getFirstName());
+								myPrefs.putAndCommitString(Keys.CUSTOMER_LAST_NAME, getLastName());
+
+								
 								if (getIsAdmin()){
 									myPrefs.putAndCommitBoolean(Keys.IS_ADMIN, true);
 
@@ -196,5 +203,22 @@ public class UserLogin extends BaseActivity {
 		}
 
 		
+	}
+	
+	
+	private void toast(String message, int duration) {
+		Toast.makeText(getApplicationContext(), message, duration).show();
+		Toast.makeText(getApplicationContext(), message, duration).show();
+
+	}
+
+	protected void toastShort(String message) {
+		
+		try {
+			toast(message, Toast.LENGTH_LONG);			
+		} catch (Exception e) {
+			(new CreateClientLogTask("UserLogin.toastShort", "Exception Caught", "error", e)).execute();
+
+		}
 	}
 }

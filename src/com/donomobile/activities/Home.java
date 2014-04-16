@@ -66,6 +66,7 @@ public class Home extends BaseActivity {
    // public ImageLoader imageLoader; 
 	private boolean isInitial = false;
 	
+	
 	private LinearLayout mCarouselContainer;
 
 	public Home() {
@@ -355,7 +356,7 @@ public class Home extends BaseActivity {
 			return null;
 
 		}
-	  }
+	}
 	
 	
 
@@ -398,6 +399,7 @@ public class Home extends BaseActivity {
 			};
 			
 			String url = "http://arc.dagher.mobi/Images/App/Logos/"+merchantId+ ".jpg";
+			
 			imageTask.execute(new String[] { url });
 		}catch(Exception e){
 			(new CreateClientLogTask("Home.getImageForIndex", "Exception Caught", "error", e)).execute();
@@ -522,6 +524,7 @@ public class Home extends BaseActivity {
 
 						AppActions.add("Home -  Item Clicked - Index:" + position + ", Merchant Name:" + name);
 
+
 						if (loadingDialog != null){
 							loadingDialog.dismiss();
 						}
@@ -532,8 +535,16 @@ public class Home extends BaseActivity {
 						
 						if (!isGoingRestaurant){
 							isGoingRestaurant = true;
-						
 							
+							ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
+							myPrefs.putAndCommitString(Keys.DEFAULT_CHURCH_ID, myMerchant.merchantId);
+							
+							Intent single = new Intent(getApplicationContext(), DefaultLocation.class);
+							single.putExtra(Constants.VENUE, myMerchant);
+							single.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+							startActivity(single);
+							/*
 							if (myMerchant.donationTypes.size() > 1){
 								
 								Intent multiple = new Intent(getApplicationContext(), ChurchDonationSelector.class);
@@ -547,6 +558,7 @@ public class Home extends BaseActivity {
 								startActivity(single);
 								
 							}
+							*/
 							
 						}
 	
@@ -601,29 +613,32 @@ public class Home extends BaseActivity {
 			//Logger.d("Current Id: " + currentItem.merchantId);
 			ImageView image = (ImageView) itemView.findViewById(R.id.imageView1);
 			
-			if (currentItem.merchantId.equalsIgnoreCase("16")){
+			if (currentItem.merchantId.equalsIgnoreCase("2116")){
 				 
 				image.setImageResource(R.drawable.sixteen);
 	            
-			} else if (currentItem.merchantId.equalsIgnoreCase("17")){
+			} else if (currentItem.merchantId.equalsIgnoreCase("2117")){
 			 
 				image.setImageResource(R.drawable.seventeen);
 
-			} else if (currentItem.merchantId.equalsIgnoreCase("15")){
+			} else if (currentItem.merchantId.equalsIgnoreCase("2115")){
 			 
 				image.setImageResource(R.drawable.fifteen);
 
-			} else if (currentItem.merchantId.equalsIgnoreCase("21")){
+			} else if (currentItem.merchantId.equalsIgnoreCase("2121")){
 			 
 				image.setImageResource(R.drawable.twentyone);
 
-			} else if (currentItem.merchantId.equalsIgnoreCase("20")){
+			} else if (currentItem.merchantId.equalsIgnoreCase("2120")){
 			 
 				image.setImageResource(R.drawable.twenty);
 
 			}else{
 			 
-				String url = "http://arc.dagher.mobi/Images/App/Promo/"+currentItem.merchantId+ ".png";
+
+				String url = "http://arc.dagher.mobi/Images/App/Logos/"+currentItem.merchantId+ ".jpg";
+		    	Logger.d("****URL: " + url);
+
 		        ArcMobileApp.imageLoader.DisplayImage(url, image);
 			}
 			

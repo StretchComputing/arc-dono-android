@@ -204,6 +204,18 @@
             android:name="com.donomobile.activities.FundsEntry"
             android:label="@string/title_activity_funds_entry" >
         </activity>
+        <activity
+            android:name="com.donomobile.activities.RecurringDonationInitial"
+            android:label="@string/title_activity_recurring_donation_initial" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.RecurringDonationFinal"
+            android:label="@string/title_activity_recurring_donation_final" >
+        </activity>
+        <activity
+            android:name="com.donomobile.activities.RecurringDonationFinal"
+            android:label="@string/title_activity_recurring_donation_final" >
+        </activity>
     </application>
 
 </manifest>

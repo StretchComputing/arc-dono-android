@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -17,8 +18,10 @@ import com.donomobile.domain.Cards;
 import com.donomobile.utils.ArcPreferences;
 import com.donomobile.utils.Constants;
 import com.donomobile.utils.Keys;
+import com.donomobile.utils.Logger;
 import com.donomobile.utils.MerchantObject;
 import com.donomobile.web.GetTokenTask;
+import com.donomobile.web.UpdateCustomerTask;
 import com.donomobile.web.rskybox.AppActions;
 import com.donomobile.web.rskybox.CreateClientLogTask;
 import com.donomobileapp.R;
@@ -26,16 +29,11 @@ import com.donomobileapp.R;
 public class UserProfile extends BaseActivity {
 
 	private RelativeLayout loggedInView;
-	private RelativeLayout loggedOutView;
 	private TextView emailTextView;
-	private TextView passwordTextView;
 	private Button editServerButton;
 	private Button signOutButton;
-	private Button loginButton;
-	private Button createButton;
 	private Button paymentHistoryButton;
 
-	private TextView helpItemText;
 	private boolean isLeaving = false;
 	private boolean isSignout = false;
 	private boolean isPaymentFlow = false;
@@ -43,6 +41,14 @@ public class UserProfile extends BaseActivity {
     private Cards selectedCard;
 	private boolean justAddedCard;
 	
+	private EditText firstNameText;
+	private EditText lastNameText;
+
+	private TextView explainText;
+	
+	private String initialFirstName;
+	private String initialLastName;
+
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -53,24 +59,28 @@ public class UserProfile extends BaseActivity {
 			setActionBarTitle("Profile");
 
 			loggedInView = (RelativeLayout) findViewById(R.id.logged_in_view);
-			loggedOutView = (RelativeLayout) findViewById(R.id.logged_out_view);
 			emailTextView = (TextView) findViewById(R.id.email_text);
-			passwordTextView = (TextView) findViewById(R.id.password_text);
 			emailTextView.setTypeface(ArcMobileApp.getLatoBoldTypeface());
-			passwordTextView.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 
-			helpItemText = (TextView) findViewById(R.id.help_item_text);
-			helpItemText.setTypeface(ArcMobileApp.getLatoLightTypeface());
+			explainText = (TextView) findViewById(R.id.textView1);
+			explainText.setTypeface(ArcMobileApp.getLatoLightTypeface());
+			
 
+			firstNameText = (EditText) findViewById(R.id.editText1);
+			firstNameText.setTypeface(ArcMobileApp.getLatoLightTypeface());
+			firstNameText.setHint("First Name");
+			
+			lastNameText = (EditText) findViewById(R.id.EditText01);
+			lastNameText.setTypeface(ArcMobileApp.getLatoLightTypeface());
+			lastNameText.setHint("Last Name");
+
+			
 			editServerButton = (Button) findViewById(R.id.edit_server_button);
 			signOutButton = (Button) findViewById(R.id.resendButton);
-			loginButton = (Button) findViewById(R.id.quickOne);
-			createButton = (Button) findViewById(R.id.button3);
 			paymentHistoryButton = (Button)findViewById(R.id.quickFour);
 			
 			editServerButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			signOutButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
-			loginButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 		//	createButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 
 			
@@ -80,6 +90,27 @@ public class UserProfile extends BaseActivity {
 			myMerchant =  (MerchantObject) getIntent().getSerializableExtra(Constants.VENUE);
 			selectedCard =  (Cards) getIntent().getSerializableExtra(Constants.SELECTED_CARD);
 			justAddedCard = getIntent().getBooleanExtra(Constants.JUST_ADD_CARD, false);
+			
+			
+			//set name
+			
+			ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
+
+			String customerFirstName = myPrefs.getString(Keys.CUSTOMER_FIRST_NAME);
+			String customerLastName = myPrefs.getString(Keys.CUSTOMER_LAST_NAME);
+			
+			initialFirstName = "";
+			initialLastName = "";
+			if (customerFirstName != null && customerFirstName.length() > 0){
+				firstNameText.setText(customerFirstName);
+				initialFirstName = customerFirstName;
+			}
+			
+			if (customerLastName != null && customerLastName.length() > 0){
+				lastNameText.setText(customerLastName);
+				initialLastName = customerLastName;
+			}
+			
 			
 		} catch (Exception e) {
 			(new CreateClientLogTask("UserProfile.onCreate", "Exception Caught", "error", e)).execute();
@@ -102,7 +133,6 @@ public class UserProfile extends BaseActivity {
 			String customerToken = myPrefs.getString(Keys.CUSTOMER_TOKEN);
 			String customerEmail = myPrefs.getString(Keys.CUSTOMER_EMAIL);
 
-			String passwordText = "**********";
 
 
 			//Show "logged in" or "logged out" view
@@ -111,18 +141,15 @@ public class UserProfile extends BaseActivity {
 				AppActions.add("UserProfile - OnResume - As Customer");
 
 				loggedInView.setVisibility(View.VISIBLE);
-				loggedOutView.setVisibility(View.INVISIBLE);
 				
 				emailTextView.setText(customerEmail);
 				
-				passwordTextView.setText(passwordText);
 				
 			}else{
 				
 				AppActions.add("UserProfile - OnResume - As Guest");
 
 				loggedInView.setVisibility(View.INVISIBLE);
-				loggedOutView.setVisibility(View.VISIBLE);
 			}
 			
 			//Show/hide edit server button
@@ -214,7 +241,15 @@ public class UserProfile extends BaseActivity {
 
 				myPrefs.putAndCommitBoolean(Keys.IS_ADMIN, false);
 
-				getGuestToken();
+				//getGuestToken();
+				
+				//Intent social = (new Intent(getApplicationContext(), UserCreate.class));
+				
+				toastShort("You have successfully logged out.");
+				Intent single = new Intent(getApplicationContext(), InitActivity.class);
+				single.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(single);
+
 			}
 		
 			
@@ -312,5 +347,67 @@ private void getGuestToken(){
 		
 		
 	}
+
+
+	@Override
+	public void onStop(){
+		
+		ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
+
+		String customerToken = myPrefs.getString(Keys.CUSTOMER_TOKEN);
+		
+		if (customerToken != null & customerToken.length() > 0){
+			
+			if (!firstNameText.getText().toString().equals(initialFirstName) || !lastNameText.getText().toString().equals(initialLastName)){
+				updateName();
+			}
+		}
+		
+		
+		super.onStop();
+	}
+
+
+	private void updateName(){
+	
+	try {
+
+		UpdateCustomerTask createUserTask = new UpdateCustomerTask(firstNameText.getText().toString(), lastNameText.getText().toString(), getApplicationContext()) {
+			@Override
+			protected void onPostExecute(Void result) {
+				try {
+					super.onPostExecute(result);
+					
+					int errorCode = getErrorCode();
+					
+					if (getFinalSuccess()){
+						
+						ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
+
+						Logger.d("UPDATE NAME SUCCEEDED!");
+						myPrefs.putAndCommitString(Keys.CUSTOMER_FIRST_NAME, UserProfile.this.firstNameText.getText().toString());
+						myPrefs.putAndCommitString(Keys.CUSTOMER_LAST_NAME, UserProfile.this.lastNameText.getText().toString());
+						
+						
+					}else{
+				
+
+					}
+				} catch (Exception e) {
+					(new CreateClientLogTask("UserProfile.updateName.onPostExecute", "Exception Caught", "error", e)).execute();
+				}
+				
+				
+			}
+		};
+		createUserTask.execute();
+	} catch (Exception e) {
+		(new CreateClientLogTask("UserProfile.updateName", "Exception Caught", "error", e)).execute();
+	}
+	
+	
+	}
+
+
 
 }

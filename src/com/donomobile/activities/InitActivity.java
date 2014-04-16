@@ -16,6 +16,7 @@ import android.widget.ViewFlipper;
 
 import com.donomobile.ArcMobileApp;
 import com.donomobile.utils.ArcPreferences;
+import com.donomobile.utils.Constants;
 import com.donomobile.utils.Keys;
 import com.donomobile.utils.Logger;
 import com.donomobile.web.GetTokenTask;
@@ -84,7 +85,7 @@ public class InitActivity extends Activity {
 			flippy.setOutAnimation(this, android.R.anim.fade_out);
 			
 			
-			getGuestToken();
+			//getGuestToken();
 		} catch (Exception e) {
 			(new CreateClientLogTask("InitActivity.onCreate", "Exception Caught", "error", e)).execute();
 
@@ -282,5 +283,44 @@ public class InitActivity extends Activity {
 		
 		
 	}
+	
+	
+	public void onLogInClicked(View view) {
+
+		try {
+			
+			AppActions.add("InitActivity - Login Clicked");
+
+			
+			
+				isLeaving = true;
+				Intent social = (new Intent(getApplicationContext(), UserLogin.class));
+		
+				startActivity(social);
+			
+		} catch (Exception e) {
+			(new CreateClientLogTask("InitActivity.onLoginClicked", "Exception Caught", "error", e)).execute();
+
+		}
+		
+	}
+	
+	public void onCreateNewClicked(View view) {
+
+		try {
+			
+			AppActions.add("InitActivity - Create Clicked");
+
+		
+				Intent social = (new Intent(getApplicationContext(), UserCreateNew.class));
+		 		
+				startActivity(social);
+		} catch (Exception e) {
+			(new CreateClientLogTask("InitActivity.onCreateNewClicked", "Exception Caught", "error", e)).execute();
+
+		}
+	}
+	
+	
 	
 }

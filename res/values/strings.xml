@@ -158,5 +158,21 @@
     <string name="rate_string">Enjoy dono?  Rate us!</string>
     <string name="rate_button">Rate dono!</string>
     <string name="confirm_signup_string">All donations made as a guest will be made anonymously.  Click here to sign up now!</string>
+    <string name="title_activity_recurring_donation_initial">RecurringDonationInitial</string>
+    <string name="title_activity_recurring_donation_final">RecurringDonationFinal</string>
+    <string name="recurring_step_one">1.) Select a donation schedule</string>
+    <string name="weekly_text">Weekly</string>
+    <string name="recurring_step_two">2.) Add the schedule details</string>
+    <string name="weekly_help_text">(ex: every Sunday)</string>
+    <string name="monthly_text">Monthly</string>
+    <string name="monthly_help_text">(ex: 4th of every month)</string>
+    <string name="x_of_month_string">x day of the Month</string>
+    <string name="x_of_month_help_string">(ex: 1st Sunday of every month)</string>
+    <string name="step_three_string">3.) Donation Amount</string>
+    <string name="submit_string">Submit</string>
+    <string name="schedule_string">Schedule</string>
+    <string name="register_only_string">Register</string>
+    <string name="full_name_string">Full Name</string>
+    <string name="profile_explain_name">Your display name will be automatically updated if you edit these fields</string>
 
 </resources>

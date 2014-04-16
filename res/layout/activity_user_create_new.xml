@@ -42,14 +42,26 @@
         android:hint="@string/password_hint"
         android:inputType="textPassword" />
 
+    <EditText
+        android:id="@+id/EditText01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/new_email_text"
+        android:layout_alignRight="@+id/new_email_text"
+        android:layout_below="@+id/new_password_text"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:hint="@string/full_name_string"
+        android:inputType="textCapWords" />
+
     <Button
         android:id="@+id/resendButton"
         style="@style/DonoOrangeStyle"
         android:layout_width="150dp"
         android:layout_height="46dp"
-        android:layout_below="@+id/new_password_text"
+        android:layout_below="@+id/EditText01"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/dono_button_orange"
         android:onClick="onRegisterClicked"
         android:text="@string/register_string" />

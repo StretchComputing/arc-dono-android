@@ -3,6 +3,10 @@ package com.donomobile.activities;
 import io.card.payment.CardIOActivity;
 import io.card.payment.CardType;
 import io.card.payment.CreditCard;
+
+import java.util.Arrays;
+
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -20,28 +24,27 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.donomobile.ArcMobileApp;
-import com.donomobile.BaseActivity;
-import com.donomobile.db.controllers.DBController;
 import com.donomobile.domain.Cards;
 import com.donomobile.utils.ArcPreferences;
 import com.donomobile.utils.Constants;
 import com.donomobile.utils.Keys;
 import com.donomobile.utils.MerchantObject;
 import com.donomobile.utils.Security;
+import com.donomobile.web.CreateUserTask;
 import com.donomobile.web.ErrorCodes;
-import com.donomobile.web.UpdateCustomerTask;
 import com.donomobile.web.rskybox.AppActions;
 import com.donomobile.web.rskybox.CreateClientLogTask;
 import com.donomobileapp.R;
 
-public class UserCreateNew extends BaseActivity {
+public class UserCreateNew extends Activity {
 
-	private TextView emailTextView;
-	private TextView passwordTextView;
+	private EditText emailTextView;
+	private EditText passwordTextView;
+	private EditText nameTextView;
+
 	private ProgressDialog loadingDialog;
 	private AlertDialog successDialog;
 	private AlertDialog pinDialog;
@@ -56,6 +59,8 @@ public class UserCreateNew extends BaseActivity {
 	private Button registerButton;
 	private Boolean isPaymentFlow;
 	
+	private String firstName;
+	private String lastName;
 	private boolean isCreating = false;
 
 	@Override
@@ -68,18 +73,21 @@ public class UserCreateNew extends BaseActivity {
 			setContentView(R.layout.activity_user_create_new);
 			
 
-			emailTextView = (TextView) findViewById(R.id.new_email_text);
-			passwordTextView = (TextView) findViewById(R.id.new_password_text);
+			emailTextView = (EditText) findViewById(R.id.new_email_text);
+			passwordTextView = (EditText) findViewById(R.id.new_password_text);
+			nameTextView = (EditText) findViewById(R.id.EditText01);
+
 			emailTextView.setTypeface(ArcMobileApp.getLatoLightTypeface());
 			passwordTextView.setTypeface(ArcMobileApp.getLatoLightTypeface());
-			
+			nameTextView.setTypeface(ArcMobileApp.getLatoLightTypeface());
+
 			titleText = (TextView) findViewById(R.id.remainingText);
 			registerButton = (Button)findViewById(R.id.resendButton);
 			
 			titleText.setTypeface(ArcMobileApp.getLatoLightTypeface());
 			registerButton.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 
-			setActionBarTitle("Register");
+			//setActionBarTitle("Register");
 
 			isPaymentFlow = getIntent().getBooleanExtra(Constants.IS_PAYMENT_FLOW, false);
 			myMerchant =  (MerchantObject) getIntent().getSerializableExtra(Constants.VENUE);
@@ -92,12 +100,12 @@ public class UserCreateNew extends BaseActivity {
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getSupportMenuInflater();
-		inflater.inflate(R.menu.action_bar_menu, menu);
-		return true;
-	}
+	//@Override
+	//public boolean onCreateOptionsMenu(Menu menu) {
+	///	MenuInflater inflater = getSupportMenuInflater();
+	//.inflate(R.menu.action_bar_menu, menu);
+	//	return true;
+	//}
 	
 	@Override
 	protected void onResume() {
@@ -113,13 +121,13 @@ public class UserCreateNew extends BaseActivity {
 			
 			if (!isCreating){
 				isCreating = true;
-				if (emailTextView != null && emailTextView.length() > 0 && passwordTextView != null && passwordTextView.length() > 0 ){
+				if (emailTextView != null && emailTextView.length() > 0 && passwordTextView != null && passwordTextView.length() > 0 && nameTextView != null && nameTextView.length() > 0 ){
 					//Send the login
 					AppActions.add("User Create New - Register Clicked - Email:" + emailTextView.getText().toString());
 
 					login();
 				}else{
-					toastShort("Please enter an email address and password.");
+					toastShort("Please enter an email address, password, and your name.");
 				}
 			}
 			
@@ -133,7 +141,20 @@ public class UserCreateNew extends BaseActivity {
 		
 		try {
 			loadingDialog.show();
-			UpdateCustomerTask createUserTask = new UpdateCustomerTask(emailTextView.getText().toString(), passwordTextView.getText().toString(), getApplicationContext()) {
+			
+
+			firstName = "";
+			lastName = "";
+			
+			String input = nameTextView.getText().toString();
+			String[] elements = input.split(" ");
+			firstName = elements[0];
+			for (int i = 1; i < elements.length; i++){
+				lastName = lastName + elements[i] + " ";
+			}
+			lastName = lastName.trim();
+				
+			CreateUserTask createUserTask = new CreateUserTask(emailTextView.getText().toString(), passwordTextView.getText().toString(), firstName, lastName, false, getApplicationContext()) {
 				@Override
 				protected void onPostExecute(Void result) {
 					try {
@@ -145,16 +166,19 @@ public class UserCreateNew extends BaseActivity {
 						
 						if (getFinalSuccess()){
 							
-							AppActions.add("Guest Create Customer - Register Successful");
+							AppActions.add("Create Customer - Register Successful");
 
 							ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
 							
 							String guestId = myPrefs.getString(Keys.GUEST_ID);
 
-							myPrefs.putAndCommitString(Keys.CUSTOMER_TOKEN, getNewCustomerToken());
+							myPrefs.putAndCommitString(Keys.CUSTOMER_TOKEN, getDevToken());
 							myPrefs.putAndCommitString(Keys.CUSTOMER_ID, guestId);
 							myPrefs.putAndCommitString(Keys.CUSTOMER_EMAIL, UserCreateNew.this.emailTextView.getText().toString());
 							
+							myPrefs.putAndCommitString(Keys.CUSTOMER_FIRST_NAME, UserCreateNew.this.firstName);
+							myPrefs.putAndCommitString(Keys.CUSTOMER_LAST_NAME, UserCreateNew.this.lastName);
+
 							
 							myPrefs.putAndCommitString(Keys.GUEST_TOKEN, "");
 							myPrefs.putAndCommitString(Keys.GUEST_ID, "");
@@ -162,11 +186,13 @@ public class UserCreateNew extends BaseActivity {
 							
 							
 
-							getCurrentServer();
+							//getCurrentServer();
 							
-							showSuccessDialog();
+							//showSuccessDialog();
 							
-							
+							toastShort("Success! You have successfully registered!");
+							goHome();
+
 						}else{
 							AppActions.add("User Create New - Register Failed - Error Code: " + errorCode);
 
@@ -175,17 +201,15 @@ public class UserCreateNew extends BaseActivity {
 								String errorMsg = "";
 								
 					            if(errorCode == ErrorCodes.USER_ALREADY_EXISTS) {
-					                errorMsg = "Email Address already used.";
+					                errorMsg = "This email address is already being used.  Please log in or try to register with a different email.";
 					            }else if (errorCode == ErrorCodes.NETWORK_ERROR){
 					                
-					                errorMsg = "Arc is having problems connecting to the internet.  Please check your connection and try again.  Thank you!";
+					                errorMsg = "Dono is having problems connecting to the internet.  Please check your connection and try again.  Thank you!";
 					                
 					            }else {
 					                errorMsg = ErrorCodes.ARC_ERROR_MSG;
 					            }
-								
-								
-								
+																
 								toastShort(errorMsg);
 								
 							}else{
@@ -512,7 +536,7 @@ public class UserCreateNew extends BaseActivity {
 			
 			AppActions.add("User Create New - New Card Added");
 
-			DBController.saveCreditCard(getContentProvider(), enteredCard);
+			//DBController.saveCreditCard(getContentProvider(), enteredCard);
 		} catch (Exception e) {
 			(new CreateClientLogTask("UserCreateNew.saveCard", "Exception Caught", "error", e)).execute();
 
@@ -638,5 +662,29 @@ public class UserCreateNew extends BaseActivity {
 		}
                 
 	}
+	
+	
+	private void toast(String message, int duration) {
+		Toast.makeText(getApplicationContext(), message, duration).show();
+		Toast.makeText(getApplicationContext(), message, duration).show();
+
+	}
+
+	protected void toastShort(String message) {
+		
+		try {
+			toast(message, Toast.LENGTH_LONG);			
+		} catch (Exception e) {
+			(new CreateClientLogTask("UserLogin.toastShort", "Exception Caught", "error", e)).execute();
+
+		}
+	}
+	
+	private void goHome(){
+		Intent goBackProfile = new Intent(getApplicationContext(), Home.class);
+		goBackProfile.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivity(goBackProfile);
+	}
+	
 
 }

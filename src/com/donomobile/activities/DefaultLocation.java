@@ -1,5 +1,10 @@
 package com.donomobile.activities;
 
+import java.util.ArrayList;
+
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,9 +17,15 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.donomobile.ArcMobileApp;
 import com.donomobile.BaseActivity;
+import com.donomobile.utils.ArcPreferences;
 import com.donomobile.utils.Constants;
+import com.donomobile.utils.Keys;
 import com.donomobile.utils.Logger;
 import com.donomobile.utils.MerchantObject;
+import com.donomobile.utils.RecurringDonationObject;
+import com.donomobile.web.DeleteRecurringDonationTask;
+import com.donomobile.web.GetRecurringDonationsTask;
+import com.donomobile.web.rskybox.AppActions;
 import com.donomobile.web.rskybox.CreateClientLogTask;
 import com.donomobileapp.R;
 
@@ -30,6 +41,11 @@ public class DefaultLocation extends BaseActivity {
 	private Button button03;
 	private Boolean didJustPay;
 	private static long back_pressed;
+	
+	private TextView recurringSubText;
+	private ArrayList<RecurringDonationObject> recurringList;
+	private RecurringDonationObject myRecurringObject = null;
+	private ProgressDialog loadingDialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +63,10 @@ public class DefaultLocation extends BaseActivity {
 			button02.setTypeface(ArcMobileApp.getLatoBoldTypeface());
 			button03 = (Button) findViewById(R.id.button3);
 			button03.setTypeface(ArcMobileApp.getLatoBoldTypeface());
+			
+			recurringSubText = (TextView) findViewById(R.id.textView3);
+			recurringSubText.setTypeface(ArcMobileApp.getLatoLightTypeface());
+			
 			
 			merchantNameText = (TextView) findViewById(R.id.textView1);
 			merchantNameText.setTypeface(ArcMobileApp.getLatoBoldTypeface());
@@ -105,6 +125,17 @@ public class DefaultLocation extends BaseActivity {
 	}
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+		//getTokensFromWeb();
+		button03.setText("Loading...");
+		recurringSubText.setText("");
+		
+		getRecurringDonationsForMerchant();
+		
+
+	}
+	@Override
 	public void onBackPressed() {
 		
 		if (!didJustPay){
@@ -153,8 +184,35 @@ public class DefaultLocation extends BaseActivity {
 	
 	public void onViewHistory(View view) {
 
-		Intent history = (new Intent(getApplicationContext(), PaymentHistory.class));
-		startActivity(history);
+		
+		ArcPreferences myPrefs = new ArcPreferences(getApplicationContext());
+
+		String customerToken = myPrefs.getString(Keys.CUSTOMER_TOKEN);
+
+
+
+		if (customerToken != null && customerToken.length() > 0){
+			
+			if (button03.getText().toString().equalsIgnoreCase("My Recurring Donation")){
+				
+				showInfoDialog();
+			}else if  (button03.getText().toString().equalsIgnoreCase("Recurring Donations")){
+				
+				
+				Intent single = new Intent(getApplicationContext(), RecurringDonationInitial.class);
+				single.putExtra(Constants.VENUE, myMerchant);
+				startActivity(single);
+			}
+			
+		}else{
+			
+			toastShort("You must be logged in to create recurring donations.  Please log in or sign up by selecting 'My Profile' in the left menu.");
+			
+		}
+		
+		
+		
+
 	}
 
 
@@ -197,5 +255,282 @@ public class DefaultLocation extends BaseActivity {
 	
 	}
 	
+	protected void getRecurringDonationsForMerchant() {
+		try {
+			
+			String myToken = getToken();
+
+			String myId = getId();
+
+			GetRecurringDonationsTask getRecurringTask = new GetRecurringDonationsTask(getApplicationContext(), myToken, myId) {
+
+				@Override
+				protected void onPostExecute(Void result) {
+					try {
+						super.onPostExecute(result);
+						
+						int errorCode = getErrorCode();
+
+						recurringList = new ArrayList<RecurringDonationObject>();
+						
+						recurringList = getDonationList();
+						
+						
+						if (recurringList != null && recurringList.size() > 0){
+						
+							
+							AppActions.add("DefaultLocation - Get Recurring Succeeded");
+							
+							boolean found = false;
+							for (int i = 0; i < recurringList.size(); i++){
+								
+								RecurringDonationObject myObject = recurringList.get(i);
+								
+								if (myObject.merchantId == Integer.parseInt(myMerchant.merchantId)){
+									myRecurringObject = recurringList.get(i);
+									DefaultLocation.this.button03.setText("My Recurring Donation");
+									DefaultLocation.this.recurringSubText.setText(DefaultLocation.this.getTextFromRecurring());
+									found = true;
+									break;
+
+								}
+							}
+							
+							if (!found){
+								DefaultLocation.this.button03.setText("Recurring Donations");
+								DefaultLocation.this.recurringSubText.setText("Click to schedule weekly or monthly donations");
+							}
+
+										        
+						}else{
+							AppActions.add("Default Location - Get Recurring Failed(or none) - Error Code:" + errorCode);
+
+							DefaultLocation.this.button03.setText("Recurring Donations");
+							DefaultLocation.this.recurringSubText.setText("Click to schedule weekly or monthly donations");
+
+
+						}
+					} catch (Exception e) {
+						
+				
+						DefaultLocation.this.button03.setText("Recurring Donations");
+
+
+						(new CreateClientLogTask("DefaultLocation.getRecurringDonationsForMerchant.onPostExecute", "Exception Caught", "error", e)).execute();
+
+					}
+
+				}
+				
+			};
+			getRecurringTask.execute();
+		} catch (Exception e) {
+			(new CreateClientLogTask("DefaultLocation.getRecurringDonationsForMerchant", "Exception Caught", "error", e)).execute();
+
+		}
+	}
 	
+	
+	public String getTextFromRecurring(){
+		
+		try{
+			
+			double total = myRecurringObject.amount + myRecurringObject.gratuity;
+			String dollarAmount = String.format("$%.2f", total);
+
+			if (myRecurringObject.type.equalsIgnoreCase("weekly")){
+				
+				String day = "";
+				if (myRecurringObject.value == 1){
+					day = "Monday";
+				}else if (myRecurringObject.value == 2){
+					day = "Tuesday";
+
+				}else if (myRecurringObject.value == 3){
+					day = "Wednesday";
+
+				}else if (myRecurringObject.value == 4){
+					day = "Thursday";
+
+				}else if (myRecurringObject.value == 5){
+					day = "Friday";
+
+				}else if (myRecurringObject.value == 6){
+					day = "Saturday";
+
+				}else if (myRecurringObject.value == 7){
+					day = "Sunday";
+
+				}
+				String returnString = dollarAmount + ", every " + day;
+				return returnString;
+				
+			}else if (myRecurringObject.type.equalsIgnoreCase("monthly")){
+				
+				String suffix = "th";
+				if (myRecurringObject.value == 1 || myRecurringObject.value == 21){
+					suffix = "st";
+				}else if (myRecurringObject.value == 2 || myRecurringObject.value == 22){
+					suffix = "nd";
+
+				}else if (myRecurringObject.value == 3 || myRecurringObject.value == 23){
+					suffix = "rd";
+
+				}
+				
+				String returnString = dollarAmount + ", the " + myRecurringObject.value + suffix + " of every month";
+				
+				return returnString;
+				
+			}else if (myRecurringObject.type.equalsIgnoreCase("xofmonth")){
+				
+				String day = "";
+				if (myRecurringObject.value == 1){
+					day = "Monday";
+				}else if (myRecurringObject.value == 2){
+					day = "Tuesday";
+
+				}else if (myRecurringObject.value == 3){
+					day = "Wednesday";
+
+				}else if (myRecurringObject.value == 4){
+					day = "Thursday";
+
+				}else if (myRecurringObject.value == 5){
+					day = "Friday";
+
+				}else if (myRecurringObject.value == 6){
+					day = "Saturday";
+
+				}else if (myRecurringObject.value == 7){
+					day = "Sunday";
+
+				}
+				
+				
+				String ofMonth = "";
+				if (myRecurringObject.xOfMonth == 1){
+					ofMonth = "1st";
+				}else if (myRecurringObject.xOfMonth == 2){
+					ofMonth = "2nd";
+
+				}else if (myRecurringObject.xOfMonth == 3){
+					ofMonth = "3rd";
+
+				}else if (myRecurringObject.xOfMonth == 4){
+					ofMonth = "4th";
+
+				}
+				
+				
+				String returnString = dollarAmount + ", the " + ofMonth + " " + day + " of every month";
+
+				return returnString;
+			}else{
+				return "";
+			}
+			
+		}catch(Exception e){
+			Logger.d("EXCEPTION + E: " + e);
+
+			return "";
+		}
+
+	}
+	
+	private void showInfoDialog() {
+		try {
+			AlertDialog.Builder builder = new AlertDialog.Builder(DefaultLocation.this);
+			builder.setTitle("Cancel Recurring Donation?");
+			builder.setMessage("Would you like to remove your recurring donation?  Your card will no longer be charged, effective immediately");
+			//builder.setIcon(R.drawable.logo);
+			builder.setPositiveButton("Remove",
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							//hideSuccessMessage();
+							deleteRecurringDonationsForMerchant();
+						}
+					});
+			
+			builder.setNegativeButton("No Thanks",
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							//hideSuccessMessage();
+						}
+					});
+			
+			builder.create().show();
+		} catch (Exception e) {
+			(new CreateClientLogTask("ChurchDonationTypeSingle.showInfoDialog", "Exception Caught", "error", e)).execute();
+
+		}
+	}
+	
+	
+	protected void deleteRecurringDonationsForMerchant() {
+		try {
+			
+			loadingDialog = new ProgressDialog(DefaultLocation.this);
+			loadingDialog.setTitle("Removing Donation...");
+			loadingDialog.setMessage("Please Wait...");
+			loadingDialog.setCancelable(false);
+			loadingDialog.show();
+			
+			String myToken = getToken();
+
+
+			DeleteRecurringDonationTask getRecurringTask = new DeleteRecurringDonationTask(getApplicationContext(), myToken, myRecurringObject.scheduleId) {
+
+				@Override
+				protected void onPostExecute(Void result) {
+					try {
+						super.onPostExecute(result);
+						
+						
+						loadingDialog.hide();
+
+						if (loadingDialog != null){
+							loadingDialog.dismiss();
+						}
+
+						
+						
+						int errorCode = getErrorCode();
+
+						if (getSuccess()){
+							
+							toastShort("Recurring donation successfully removed!");
+							DefaultLocation.this.button03.setText("Recurring Donations");
+							DefaultLocation.this.recurringSubText.setText("Click to schedule weekly or monthly donations");
+							
+							
+						}else{
+							
+							toastShort("Error deleting recurring donation.  If the problem persists, please contact customer support.");
+
+						}
+						
+					} catch (Exception e) {
+						
+				
+
+
+						(new CreateClientLogTask("DefaultLocation.deleteRecurringDonationsForMerchant.onPostExecute", "Exception Caught", "error", e)).execute();
+
+					}
+
+				}
+				
+			};
+			getRecurringTask.execute();
+		} catch (Exception e) {
+			(new CreateClientLogTask("DefaultLocation.deleteRecurringDonationsForMerchant", "Exception Caught", "error", e)).execute();
+
+		}
+	}
+
 }
